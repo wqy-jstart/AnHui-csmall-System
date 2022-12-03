@@ -1,9 +1,5 @@
-package cn.tedu.anhuicsmall.product.pojo.entity;
+package cn.tedu.anhuicsmall.product.pojo.vo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -11,19 +7,15 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 用户实体类(消费者,主角)
- *
- * @Author java@Wqy
- * @Version 0.0.1
+ * 后台管理员掌控的用户,列表信息
  */
 @Data
-@TableName("ups_user")
-public class User implements Serializable {
+public class UserListItemVO implements Serializable {
+
 
     /**
      * 用户id
      */
-    @TableId(type = IdType.AUTO)
     @ApiModelProperty(value = "用户id",required = true)
     private Long id;
 
@@ -32,12 +24,6 @@ public class User implements Serializable {
      */
     @ApiModelProperty(value = "用户名",required = true)
     private String username;
-
-    /**
-     * 密码(密文)
-     */
-    @ApiModelProperty(value = "密码(密文)",required = true)
-    private String password;
 
     /**
      * 性别
