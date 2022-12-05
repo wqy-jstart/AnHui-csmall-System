@@ -33,7 +33,7 @@ CREATE TABLE ups_address
 (
     id           bigint(20) unsigned DEFAULT NULL AUTO_INCREMENT COMMENT '数据id',
     user_id      bigint(20) unsigned DEFAULT NULL COMMENT '用户id',
-    name         varchar(50) DEFAULT NULL COMMENT '地址名称',
+    name         varchar(50) NOT NULL COMMENT '地址名称',
     gmt_create   datetime    DEFAULT NULL COMMENT '数据创建时间',
     gmt_modified datetime    DEFAULT NULL COMMENT '数据最后修改时间',
     PRIMARY KEY (id)

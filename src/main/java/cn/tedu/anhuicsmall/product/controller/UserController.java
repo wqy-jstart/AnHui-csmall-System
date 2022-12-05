@@ -24,7 +24,7 @@ import java.util.List;
  * @Author java@Wqy
  * @Version 0.0.1
  */
-@Api(tags = "01.用户商品模块")
+@Api(tags = "01.用户模块")
 @Slf4j
 @Validated
 @RestController
@@ -35,6 +35,7 @@ public class UserController {
         log.debug("创建控制器类:UserController");
     }
 
+    // 注入用户的业务层接口类
     @Autowired
     private IUserService userService;
 
