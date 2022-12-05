@@ -1,5 +1,6 @@
 -- csmall_ups
 
+DROP DATABASE IF EXISTS csmall_ups;
 CREATE DATABASE csmall_ups;
 
 USE csmall_ups;
@@ -8,7 +9,7 @@ USE csmall_ups;
 DROP TABLE IF EXISTS ups_user;
 CREATE TABLE ups_user
 (
-    id           bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '数据id',
+    id           bigint(20) unsigned DEFAULT NULL AUTO_INCREMENT COMMENT '数据id',
     username     varchar(50)          DEFAULT NULL COMMENT '用户名',
     password     char(64)             DEFAULT NULL COMMENT '密码（密文）',
     gender       varchar(25)          DEFAULT NULL COMMENT '性别',
@@ -30,8 +31,8 @@ VALUES ('开发者','123456','男',19,'Devotion','https://img2.baidu.com/it/u=42
 DROP TABLE IF EXISTS ups_address;
 CREATE TABLE ups_address
 (
-    id           bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '数据id',
-    user_id      bigint(20) unsigned NOT NULL COMMENT '用户id',
+    id           bigint(20) unsigned DEFAULT NULL AUTO_INCREMENT COMMENT '数据id',
+    user_id      bigint(20) unsigned DEFAULT NULL COMMENT '用户id',
     name         varchar(50) DEFAULT NULL COMMENT '地址名称',
     gmt_create   datetime    DEFAULT NULL COMMENT '数据创建时间',
     gmt_modified datetime    DEFAULT NULL COMMENT '数据最后修改时间',
@@ -39,11 +40,23 @@ CREATE TABLE ups_address
 ) DEFAULT CHARSET = utf8mb4 COMMENT ='收货地址';
 INSERT INTO ups_address(user_id, name,gmt_create,gmt_modified) VALUES (1,'浙江省-宁波市-江北区-孔浦街道', '2022-07-08 11:30:44', '2022-07-08 11:30:44');
 
+# 购物车
+DROP TABLE IF EXISTS ups_cart;
+CREATE TABLE ups_cart
+(
+    id             bigint(20) unsigned DEFAULT NULL AUTO_INCREMENT COMMENT '数据id',
+    user_id        bigint(20) unsigned DEFAULT NULL COMMENT '用户id',
+    spu_id         bigint(20) unsigned DEFAULT NULL COMMENT '商品SPU详情id',
+    gmt_create     datetime            DEFAULT NULL COMMENT '数据创建时间',
+    gmt_modified   datetime            DEFAULT NULL COMMENT '数据最后修改时间',
+    PRIMARY KEY (id)
+) DEFAULT CHARSET = utf8mb4 COMMENT ='购物车';
+
 # 商品分类
 DROP TABLE IF EXISTS ups_category;
 CREATE TABLE ups_category
 (
-    id           bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '数据id',
+    id           bigint(20) unsigned DEFAULT NULL AUTO_INCREMENT COMMENT '数据id',
     name         varchar(50)         DEFAULT NULL COMMENT '类别名称',
     parent_id    bigint(20) unsigned DEFAULT '0' COMMENT '父级类别id，如果无父级，则为0',
     depth        tinyint(3) unsigned DEFAULT '1' COMMENT '深度，最顶级类别的深度为1，次级为2，以此类推',
@@ -86,7 +99,7 @@ VALUES ('建材/家居',0,1,'家',1,1,1,1, '2022-07-08 11:30:44', '2022-07-08 11
 DROP TABLE IF EXISTS ups_brand;
 CREATE TABLE ups_brand
 (
-    id           bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '数据id',
+    id           bigint(20) unsigned DEFAULT NULL AUTO_INCREMENT COMMENT '数据id',
     name         varchar(50)         DEFAULT NULL COMMENT '品牌名称',
     pinyin       varchar(50)         DEFAULT NULL COMMENT '品牌名称的拼音',
     logo         varchar(255)        DEFAULT NULL COMMENT '品牌logo的URL',
@@ -118,7 +131,7 @@ VALUES ('格力','geli','无','自信即巅峰','无',1,'10000',1, '2022-07-08 1
 DROP TABLE IF EXISTS ups_album;
 CREATE TABLE ups_album
 (
-    id           bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '数据id',
+    id           bigint(20) unsigned DEFAULT NULL AUTO_INCREMENT COMMENT '数据id',
     name         varchar(50)         DEFAULT NULL COMMENT '相册名称',
     description  varchar(255)        DEFAULT NULL COMMENT '相册简介',
     sort         tinyint(3) unsigned DEFAULT '0' COMMENT '排序序号',
@@ -152,7 +165,7 @@ VALUES ('空调','有关空调的相关图片',1, '2022-07-08 11:30:44', '2022-0
 DROP TABLE IF EXISTS ups_picture;
 CREATE TABLE ups_picture
 (
-    id           bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '数据id',
+    id           bigint(20) unsigned DEFAULT NULL AUTO_INCREMENT COMMENT '数据id',
     album_id     bigint(20) unsigned  DEFAULT NULL COMMENT '相册id',
     url          varchar(255)         DEFAULT NULL COMMENT '图片url',
     description  varchar(255)         DEFAULT NULL COMMENT '图片简介',
@@ -211,7 +224,7 @@ VALUES (1,'https://img.alicdn.com/imgextra/i1/2435073206/O1CN01JCQjzc1ZYOZ89Bvbg
 DROP TABLE IF EXISTS ups_attribute_template;
 CREATE TABLE ups_attribute_template
 (
-    id           bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '数据id',
+    id           bigint(20) unsigned DEFAULT NULL AUTO_INCREMENT COMMENT '数据id',
     name         varchar(50)         DEFAULT NULL COMMENT '属性模版名称',
     pinyin       varchar(50)         DEFAULT NULL COMMENT '属性模版名称的拼音',
     keywords     varchar(255)        DEFAULT NULL COMMENT '关键词列表，各关键词使用英文的逗号分隔',
@@ -246,7 +259,7 @@ VALUES ('空调的属性模板', 'KongTiao', '关键词1,关键词2,关键词3',
 DROP TABLE IF EXISTS ups_attribute;
 CREATE TABLE ups_attribute
 (
-    id           bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '数据id',
+    id           bigint(20) unsigned DEFAULT NULL AUTO_INCREMENT COMMENT '数据id',
     template_id  bigint(20) unsigned DEFAULT NULL COMMENT '所属属性模版id',
     name         varchar(50)         DEFAULT NULL COMMENT '属性名称',
     description  varchar(255)        DEFAULT NULL COMMENT '属性简介（某些属性名称可能相同，通过简介补充描述）',
@@ -319,7 +332,7 @@ VALUES (1, '制冷量', '暂无', '5KW', '', 99, '2022-07-08 11:30:44', '2022-07
 DROP TABLE IF EXISTS ups_brand_category;
 CREATE TABLE ups_brand_category
 (
-    id           bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '数据id',
+    id           bigint(20) unsigned DEFAULT NULL AUTO_INCREMENT COMMENT '数据id',
     brand_id     bigint(20) unsigned DEFAULT NULL COMMENT '品牌id',
     category_id  bigint(20) unsigned DEFAULT NULL COMMENT '类别id',
     gmt_create   datetime            DEFAULT NULL COMMENT '数据创建时间',
@@ -332,7 +345,7 @@ CREATE TABLE ups_brand_category
 DROP TABLE IF EXISTS ups_category_attribute_template;
 CREATE TABLE ups_category_attribute_template
 (
-    id                    bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '数据id',
+    id                    bigint(20) unsigned DEFAULT NULL AUTO_INCREMENT COMMENT '数据id',
     category_id           bigint(20) unsigned DEFAULT NULL COMMENT '类别id',
     attribute_template_id bigint(20) unsigned DEFAULT NULL COMMENT '属性模版id',
     gmt_create            datetime            DEFAULT NULL COMMENT '数据创建时间',
@@ -344,7 +357,7 @@ CREATE TABLE ups_category_attribute_template
 DROP TABLE IF EXISTS ups_spu;
 CREATE TABLE ups_spu
 (
-    id                    bigint(20) unsigned NOT NULL COMMENT '数据id',
+    id                    bigint(20) unsigned DEFAULT NULL COMMENT '数据id',
     name                  varchar(50)         DEFAULT NULL COMMENT 'SPU名称',
     type_number           varchar(50)         DEFAULT NULL COMMENT 'SPU编号',
     title                 varchar(255)        DEFAULT NULL COMMENT '标题',
@@ -378,13 +391,12 @@ CREATE TABLE ups_spu
 DROP TABLE IF EXISTS ups_order;
 CREATE TABLE ups_order
 (
-    id           bigint(20) unsigned NOT NULL COMMENT '数据id',
-    user_id      bigint(20) unsigned NOT NULL COMMENT '用户id',
-    spu_id       bigint(20) unsigned NOT NULL COMMENT '商品SPU详情id',
-    address_id   bigint(20) unsigned NOT NULL COMMENT '收货地址id',
-    logistics_id varchar(25)      DEFAULT NULL COMMENT '物流id',
+    id           bigint(20) unsigned DEFAULT NULL COMMENT '数据id',
+    user_id      bigint(20) unsigned DEFAULT NULL COMMENT '用户id',
+    spu_id       bigint(20) unsigned DEFAULT NULL COMMENT '商品SPU详情id',
+    address_id   bigint(20) unsigned DEFAULT NULL COMMENT '收货地址id',
+    logistics_id bigint(20) unsigned DEFAULT NULL COMMENT '物流id',
     number       int(11) unsigned DEFAULT '0' COMMENT '数量',
-    type_number  varchar(50)      DEFAULT NULL COMMENT 'SPU编号',
     gmt_create   datetime         DEFAULT NULL COMMENT '数据创建时间',
     gmt_modified datetime         DEFAULT NULL COMMENT '数据最后修改时间',
     PRIMARY KEY (id)
@@ -394,7 +406,7 @@ CREATE TABLE ups_order
 DROP TABLE IF EXISTS ups_logistics;
 CREATE TABLE ups_logistics
 (
-    id           bigint(20) unsigned NOT NULL COMMENT '数据id',
+    id           bigint(20) unsigned DEFAULT NULL COMMENT '数据id',
     name         varchar(50)  DEFAULT NULL COMMENT '物流名称',
     note         varchar(255) DEFAULT NULL COMMENT '物流备注',
     gmt_create   datetime     DEFAULT NULL COMMENT '数据创建时间',

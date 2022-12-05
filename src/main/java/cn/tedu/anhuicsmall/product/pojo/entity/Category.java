@@ -1,5 +1,7 @@
 package cn.tedu.anhuicsmall.product.pojo.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -20,7 +22,7 @@ public class Category implements Serializable {
     /**
      * 分类id
      */
-    @ApiModelProperty(value = "分类id",required = true)
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**

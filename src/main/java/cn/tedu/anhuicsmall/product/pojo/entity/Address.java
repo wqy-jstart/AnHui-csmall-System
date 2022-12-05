@@ -1,5 +1,7 @@
 package cn.tedu.anhuicsmall.product.pojo.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -20,7 +22,7 @@ public class Address implements Serializable {
     /**
      * 收货地址id
      */
-    @ApiModelProperty(value = "收货地址id",required = true)
+    @TableId(type = IdType.AUTO)
     private Long id;
 
     /**

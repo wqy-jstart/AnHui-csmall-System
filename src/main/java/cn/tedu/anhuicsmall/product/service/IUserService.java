@@ -23,6 +23,12 @@ public interface IUserService extends IService<User> {
     void insert(UserLoginDTO userLoginDTO);
 
     /**
+     * 处理根据id删除用户的功能
+     * @param userId 要删除的用户id
+     */
+    void deleteById(Long userId);
+
+    /**
      * 处理查询后台用户列表的功能
      * @return 用户列表集合
      */
