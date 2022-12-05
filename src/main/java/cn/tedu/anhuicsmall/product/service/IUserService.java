@@ -1,10 +1,10 @@
 package cn.tedu.anhuicsmall.product.service;
 
 import cn.tedu.anhuicsmall.product.pojo.dto.UserLoginDTO;
+import cn.tedu.anhuicsmall.product.pojo.dto.UserUpdateDTO;
 import cn.tedu.anhuicsmall.product.pojo.entity.User;
-import cn.tedu.anhuicsmall.product.pojo.vo.UserListItemVO;
-import cn.tedu.anhuicsmall.product.pojo.vo.UserStandardVO;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -14,6 +14,7 @@ import java.util.List;
  * @Author java@Wqy
  * @Version 0.0.1
  */
+@Transactional // 开启基于Spring JDBC的事务注解
 public interface IUserService extends IService<User> {
 
     /**
@@ -27,6 +28,19 @@ public interface IUserService extends IService<User> {
      * @param userId 要删除的用户id
      */
     void deleteById(Long userId);
+
+    /**
+     * 根据用户id修改用户
+     * @param userUpdateDTO 用户修改的信息
+     */
+    void update(UserUpdateDTO userUpdateDTO);
+
+    /**
+     * 根据id查询用户详情
+     * @param userId 用户id
+     * @return 返回用户详情
+     */
+    User selectById(Long userId);
 
     /**
      * 处理查询后台用户列表的功能

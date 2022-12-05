@@ -1,6 +1,8 @@
 package cn.tedu.anhuicsmall.product.controller;
 
 import cn.tedu.anhuicsmall.product.pojo.dto.UserLoginDTO;
+import cn.tedu.anhuicsmall.product.pojo.dto.UserUpdateDTO;
+import cn.tedu.anhuicsmall.product.pojo.entity.User;
 import cn.tedu.anhuicsmall.product.service.IUserService;
 import cn.tedu.anhuicsmall.product.web.JsonResult;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
@@ -69,12 +71,41 @@ public class UserController {
     }
 
     /**
+     * 处理修改用户信息的请求
+     * @param userUpdateDTO 用户修改的信息
+     * @return 返回结果集
+     */
+    @ApiOperation("根据id修改用户信息")
+    @ApiOperationSupport(order = 300)
+    @PostMapping("/update")
+    public JsonResult<Void> update(UserUpdateDTO userUpdateDTO){
+        log.debug("开始处理修改id为{}的用户信息的请求",userUpdateDTO.getId());
+        userService.update(userUpdateDTO);
+        return JsonResult.ok();
+    }
+
+    /**
+     * 根据id查询用户详情的请求
+     * @param userId 用户id
+     * @return 返回结果集
+     */
+    @ApiOperation("根据id查询用户详情")
+    @ApiOperationSupport(order = 501)
+    @ApiImplicitParam(name = "userId",value = "用户id",required = true,dataType = "long")
+    @PostMapping("/{userId:[0-9]+}/selectById")
+    public JsonResult<User> selectById(@Range(min = 1,message = "查询失败,该用户id无效") @PathVariable Long userId){
+        log.debug("开始处理查询id为[{}]的用户详情",userId);
+        User user = userService.selectById(userId);
+        return JsonResult.ok(user);
+    }
+
+    /**
      * 查询用户列表的请求
      *
      * @return 返回结果集
      */
     @ApiOperation("查询用户列表")
-    @ApiOperationSupport(order = 500)
+    @ApiOperationSupport(order = 502)
     @GetMapping("")
     public JsonResult<List<Object>> selectList() {
         log.debug("开始处理查询用户列表的请求...无参!");

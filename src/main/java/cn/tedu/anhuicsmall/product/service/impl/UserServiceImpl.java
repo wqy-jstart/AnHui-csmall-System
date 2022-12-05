@@ -5,12 +5,15 @@ import cn.tedu.anhuicsmall.product.mapper.CartMapper;
 import cn.tedu.anhuicsmall.product.mapper.SpuMapper;
 import cn.tedu.anhuicsmall.product.mapper.UserMapper;
 import cn.tedu.anhuicsmall.product.pojo.dto.UserLoginDTO;
+import cn.tedu.anhuicsmall.product.pojo.dto.UserUpdateDTO;
 import cn.tedu.anhuicsmall.product.pojo.entity.Cart;
 import cn.tedu.anhuicsmall.product.pojo.entity.Spu;
 import cn.tedu.anhuicsmall.product.pojo.entity.User;
 import cn.tedu.anhuicsmall.product.pojo.vo.UserListItemVO;
+import cn.tedu.anhuicsmall.product.pojo.vo.UserStandardVO;
 import cn.tedu.anhuicsmall.product.service.IUserService;
 import cn.tedu.anhuicsmall.product.web.ServiceCode;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -77,41 +80,86 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     /**
      * 根据id删除用户信息的功能
+     *
      * @param userId 要删除的用户id
      */
     @Override
     public void deleteById(Long userId) {
-        log.debug("开始处理删除用户名为[{}]的用户信息",userId);
+        log.debug("开始处理删除用户名为[{}]的用户信息", userId);
         // 先根据id查看用户是否存在
         User queryUser = userMapper.selectById(userId);
-        if (queryUser == null){
+        if (queryUser == null) {
             String message = "删除失败,该用户不存在!";
             log.debug(message);
-            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
         }
 
         // 如果用户关联的购物车信息不为空,则不能删除
         QueryWrapper<Cart> wrapperToCart = new QueryWrapper<>();
-        wrapperToCart.eq("user_id",userId);
+        wrapperToCart.eq("user_id", userId);
         Cart queryCart = cartMapper.selectOne(wrapperToCart);
-        if (queryCart!=null){
+        if (queryCart != null) { // 这里需判断购物车结果不为Null,否则引发空指针
             QueryWrapper<Spu> wrapperToSpu = new QueryWrapper<>();
-            wrapperToSpu.eq("id",queryCart.getSpuId());
+            wrapperToSpu.eq("id", queryCart.getSpuId());
             Spu querySpu = spuMapper.selectOne(wrapperToSpu);
-            if (querySpu != null){
+            if (querySpu != null) {
                 String message = "删除失败,该用户包含关联的购物信息!";
                 log.debug(message);
-                throw new ServiceException(ServiceCode.ERROR_CONFLICT,message);
+                throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
             }
         }
 
-        log.debug("即将执行删除id为[{}]的用户信息",userId);
+        log.debug("即将执行删除id为[{}]的用户信息", userId);
         int rows = userMapper.deleteById(userId);
-        if (rows>1){
+        if (rows > 1) {
             String message = "删除失败,服务器忙,请稍后再试...";
             log.debug(message);
-            throw new ServiceException(ServiceCode.ERR_DELETE,message);
+            throw new ServiceException(ServiceCode.ERR_DELETE, message);
         }
+    }
+
+    /**
+     * 开始处理根据id修改用户信息的功能
+     *
+     * @param userUpdateDTO 用户修改的信息
+     */
+    @Override
+    public void update(UserUpdateDTO userUpdateDTO) {
+        log.debug("开始处理修改id为[{}]的用户信息", userUpdateDTO.getId());
+        User queryUser = userMapper.selectById(userUpdateDTO.getId());
+        if (queryUser == null) {
+            String message = "修改失败,该用户数据不存在!";
+            log.debug(message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
+        }
+
+        log.debug("即将修改id为[{}]的用户信息...", userUpdateDTO.getId());
+        User user = new User();
+        BeanUtils.copyProperties(userUpdateDTO,user);
+        int rows = userMapper.updateById(user);
+        if (rows > 1) {
+            String message = "修改失败,服务器忙,请稍后再试...";
+            log.debug(message);
+            throw new ServiceException(ServiceCode.ERR_DELETE, message);
+        }
+    }
+
+    /**
+     * 开始处理根据id查询详情的功能
+     *
+     * @param userId 用户id
+     * @return 返回用户实体类
+     */
+    @Override
+    public User selectById(Long userId) {
+        log.debug("开始处理查询id为[{}]的用户信息", userId);
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            String message = "查询失败,该用户信息不存在!";
+            log.debug(message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
+        }
+        return user;
     }
 
     /**
