@@ -94,13 +94,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         QueryWrapper<Cart> wrapperToCart = new QueryWrapper<>();
         wrapperToCart.eq("user_id",userId);
         Cart queryCart = cartMapper.selectOne(wrapperToCart);
-        QueryWrapper<Spu> wrapperToSpu = new QueryWrapper<>();
-        wrapperToSpu.eq("id",queryCart.getSpuId());
-        Spu querySpu = spuMapper.selectOne(wrapperToSpu);
-        if (querySpu != null){
-            String message = "删除失败,该用户包含关联的购物信息!";
-            log.debug(message);
-            throw new ServiceException(ServiceCode.ERROR_CONFLICT,message);
+        if (queryCart!=null){
+            QueryWrapper<Spu> wrapperToSpu = new QueryWrapper<>();
+            wrapperToSpu.eq("id",queryCart.getSpuId());
+            Spu querySpu = spuMapper.selectOne(wrapperToSpu);
+            if (querySpu != null){
+                String message = "删除失败,该用户包含关联的购物信息!";
+                log.debug(message);
+                throw new ServiceException(ServiceCode.ERROR_CONFLICT,message);
+            }
         }
 
         log.debug("即将执行删除id为[{}]的用户信息",userId);

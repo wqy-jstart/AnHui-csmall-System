@@ -29,7 +29,7 @@ public class Cart implements Serializable {
      * 消费者用户id
      */
     @ApiModelProperty(value = "消费者用户id",required = true)
-    private Long userIrd;
+    private Long userId;
 
     /**
      * SPU的id
