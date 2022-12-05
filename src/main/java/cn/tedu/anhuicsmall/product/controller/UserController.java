@@ -24,7 +24,7 @@ import java.util.List;
  * @Author java@Wqy
  * @Version 0.0.1
  */
-@Api(tags = "01.用户模块")
+@Api(tags = "01.用户管理模块")
 @Slf4j
 @Validated
 @RestController
