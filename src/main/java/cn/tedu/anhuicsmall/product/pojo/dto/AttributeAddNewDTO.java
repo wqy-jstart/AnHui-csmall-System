@@ -1,34 +1,20 @@
-package cn.tedu.anhuicsmall.product.pojo.entity;
+package cn.tedu.anhuicsmall.product.pojo.dto;
 
-import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.Date;
 
 /**
- * 属性的实体类
- *
- * @Author java@Wqy
- * @Version 0.0.1
+ * 添加属性的DTO类
  */
 @Data
-@TableName("ups_attribute")
-public class Attribute implements Serializable {
-
-    /**
-     * 属性id
-     */
-    @TableId(type = IdType.AUTO)
-    private Long id;
+public class AttributeAddNewDTO implements Serializable {
 
     /**
      * 模板id
      */
     @ApiModelProperty(value = "模板id",required = true)
-    @NotNull
     private Long templateId;
 
     /**
@@ -60,16 +46,4 @@ public class Attribute implements Serializable {
      */
     @ApiModelProperty(value = "属性排序",required = true)
     private Integer sort;
-
-    /**
-     * 数据创建时间
-     */
-    @TableField(fill = FieldFill.INSERT)
-    private Date gmtCreate;
-
-    /**
-     * 数据修改时间
-     */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Date gmtModified;
 }

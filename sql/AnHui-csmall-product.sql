@@ -260,7 +260,7 @@ DROP TABLE IF EXISTS ups_attribute;
 CREATE TABLE ups_attribute
 (
     id           bigint(20) unsigned DEFAULT NULL AUTO_INCREMENT COMMENT '数据id',
-    template_id  bigint(20) unsigned DEFAULT NULL COMMENT '所属属性模版id',
+    template_id  bigint(20) unsigned NOT NULL COMMENT '所属属性模版id',
     name         varchar(50)         DEFAULT NULL COMMENT '属性名称',
     description  varchar(255)        DEFAULT NULL COMMENT '属性简介（某些属性名称可能相同，通过简介补充描述）',
     value_list         varchar(255)        DEFAULT NULL COMMENT '备选值列表',
