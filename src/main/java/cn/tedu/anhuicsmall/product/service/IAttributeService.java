@@ -21,7 +21,7 @@ import java.util.List;
 public interface IAttributeService extends IService<Attribute> {
 
     /**
-     * 处理属性注册时添加属性的功能
+     * 处理添加属性的功能
      * @param attributeAddNewDTO 注册需要的属性信息
      */
     void insert(AttributeAddNewDTO attributeAddNewDTO);
