@@ -84,7 +84,7 @@ public class AttributeServiceImpl extends ServiceImpl<AttributeMapper, Attribute
         if (rows > 1) {
             String message = "删除失败,服务器忙,请稍后再试...";
             log.debug(message);
-            throw new ServiceException(ServiceCode.ERR_INSERT, message);
+            throw new ServiceException(ServiceCode.ERR_DELETE, message);
         }
     }
 
@@ -119,7 +119,7 @@ public class AttributeServiceImpl extends ServiceImpl<AttributeMapper, Attribute
         if (rows > 1) {
             String message = "修改失败,服务器忙,请稍后再试...";
             log.debug(message);
-            throw new ServiceException(ServiceCode.ERR_INSERT, message);
+            throw new ServiceException(ServiceCode.ERR_UPDATE, message);
         }
     }
 

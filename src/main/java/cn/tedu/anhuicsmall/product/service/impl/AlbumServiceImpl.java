@@ -138,7 +138,7 @@ public class AlbumServiceImpl extends ServiceImpl<AlbumMapper, Album> implements
         if (rows > 1) {
             String message = "修改相册失败,服务器忙,请稍后再试...";
             log.debug(message);
-            throw new ServiceException(ServiceCode.ERR_DELETE, message);
+            throw new ServiceException(ServiceCode.ERR_UPDATE, message);
         }
     }
 

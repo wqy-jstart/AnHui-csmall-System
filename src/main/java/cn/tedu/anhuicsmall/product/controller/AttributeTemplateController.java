@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -46,7 +47,7 @@ public class AttributeTemplateController {
     @ApiOperation("添加属性模板")
     @ApiOperationSupport(order = 100)
     @PostMapping("/insert")
-    public JsonResult<Void> insert(AttributeTemplateAddNewDTO attributeTemplateAddNewDTO){
+    public JsonResult<Void> insert(@Valid AttributeTemplateAddNewDTO attributeTemplateAddNewDTO){
         log.debug("开始处理添加属性模板的请求,参数:{}",attributeTemplateAddNewDTO);
         attributeTemplateService.insert(attributeTemplateAddNewDTO);
         return JsonResult.ok();

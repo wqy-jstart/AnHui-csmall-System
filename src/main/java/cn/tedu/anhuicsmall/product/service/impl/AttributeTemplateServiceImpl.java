@@ -29,7 +29,7 @@ import java.util.List;
 public class AttributeTemplateServiceImpl extends ServiceImpl<AttributeTemplateMapper, AttributeTemplate> implements IAttributeTemplateService {
 
     public AttributeTemplateServiceImpl() {
-        log.debug("创建业务层接口实现类对象：AttributeTemplateServiceImpl");
+        log.debug("创建业务层接口实现类：AttributeTemplateServiceImpl");
     }
 
     // 注入属性模板的持久层接口
@@ -100,7 +100,7 @@ public class AttributeTemplateServiceImpl extends ServiceImpl<AttributeTemplateM
         if (rowsToAttribute < 1) { // 一个属性模板id对应的属性不止一个
             String message = "删除失败,服务器忙,请稍后再试...";
             log.debug(message);
-            throw new ServiceException(ServiceCode.ERR_INSERT, message);
+            throw new ServiceException(ServiceCode.ERR_DELETE, message);
         }
     }
 
