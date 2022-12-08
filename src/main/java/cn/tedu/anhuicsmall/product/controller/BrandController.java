@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -47,7 +48,7 @@ public class BrandController {
     @ApiOperation("添加品牌")
     @ApiOperationSupport(order = 100)
     @PostMapping("/insert")
-    public JsonResult<Void> insert(BrandAddNewDTO brandAddNewDTO) {
+    public JsonResult<Void> insert(@Valid BrandAddNewDTO brandAddNewDTO) {
         log.debug("开始处理添加品牌的请求,参数:{}", brandAddNewDTO);
         brandService.insert(brandAddNewDTO);
         return JsonResult.ok();

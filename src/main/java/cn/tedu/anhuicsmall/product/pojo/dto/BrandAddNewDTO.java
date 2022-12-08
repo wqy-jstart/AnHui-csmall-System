@@ -3,6 +3,7 @@ package cn.tedu.anhuicsmall.product.pojo.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -16,6 +17,7 @@ public class BrandAddNewDTO implements Serializable {
      * 品牌名称
      */
     @ApiModelProperty(value = "品牌名称",required = true)
+    @NotNull
     private String name;
 
     /**

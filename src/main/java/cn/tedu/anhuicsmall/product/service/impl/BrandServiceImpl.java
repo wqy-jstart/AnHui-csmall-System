@@ -198,14 +198,14 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
         String[] tips = {"禁用", "启用"};
         log.debug("开始处理[{}品牌]的业务,id参数为{}", tips[enable], brandId);
         // 根据id查询品牌详情
-        Brand querybrand = brandMapper.selectById(brandId);
-        if (querybrand == null) {
+        Brand queryBrand = brandMapper.selectById(brandId);
+        if (queryBrand == null) {
             String message = tips[enable] + "品牌失败,尝试访问的数据不存在!";
             log.debug(message);
             throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
         }
         // 判断查询结果中的enable与方法参数enable是否相同
-        if (enable.equals(querybrand.getEnable())) {
+        if (enable.equals(queryBrand.getEnable())) {
             String message = tips[enable] + "品牌失败，管理员账号已经处于" + tips[enable] + "状态！";
             log.debug(message);
             throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
