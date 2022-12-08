@@ -91,7 +91,7 @@ public class AttributeTemplateController {
     @ApiOperation("根据id查询属性模板")
     @ApiOperationSupport(order = 500)
     @ApiImplicitParam(name = "attributeTemplateId",value = "属性模板id]",required = true,dataType = "long")
-    @PostMapping("/{attributeTemplateId:[0-9]+}/selectById")
+    @GetMapping("/{attributeTemplateId:[0-9]+}/selectById")
     public JsonResult<AttributeTemplate> selectById(@Range(min = 1,message = "查询失败,该属性模板id无效!")
                                                     @PathVariable Long attributeTemplateId){
         log.debug("开始处理查询id为{}的属性模板信息",attributeTemplateId);

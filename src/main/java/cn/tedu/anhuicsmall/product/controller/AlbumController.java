@@ -92,7 +92,7 @@ public class AlbumController {
     @ApiOperation("根据id查询相册详情")
     @ApiOperationSupport(order = 500)
     @ApiImplicitParam(name = "albumId", value = "相册id", required = true, dataType = "long")
-    @PostMapping("/{albumId:[0-9]+}/selectById")
+    @GetMapping("/{albumId:[0-9]+}/selectById")
     public JsonResult<Album> selectById(@Range(min = 1, message = "查询失败,该相册id无效!")
                                         @PathVariable Long albumId) {
         log.debug("开始处理查询id为{}的相册信息", albumId);

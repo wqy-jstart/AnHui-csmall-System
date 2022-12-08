@@ -91,7 +91,7 @@ public class AttributeController {
     @ApiOperation("根据id查询属性信息")
     @ApiOperationSupport(order = 500)
     @ApiImplicitParam(name = "attributeId",value = "属性id",required = true,dataType = "long")
-    @PostMapping("/{attributeId:[0-9]+}/selectById")
+    @GetMapping("/{attributeId:[0-9]+}/selectById")
     public JsonResult<Attribute> selectById(@Range(min = 1,message = "查询失败,该属性id为无效!")
                                             @PathVariable Long attributeId){
         log.debug("开始处理查询id为{}的属性详情",attributeId);
@@ -103,8 +103,23 @@ public class AttributeController {
      * 处理查询属性列表的功能
      * @return 返回列表集合
      */
-    @ApiOperation("查询属性列表")
+    @ApiOperation("根据模板id查询属性列表")
     @ApiOperationSupport(order = 501)
+    @ApiImplicitParam(name = "templateId",value = "模板id",required = true,dataType = "long")
+    @GetMapping("/{templateId:[0-9]+}/listByTemplate")
+    public JsonResult<List<Object>> selectListToTemplateId(@Range(min = 1,message = "查询失败,该模板id为无效!")
+                                                           @PathVariable Long templateId){
+        log.debug("开始处理查询属性列表的请求,无参!");
+        List<Object> objects = attributeService.selectListToTemplateId(templateId);
+        return JsonResult.ok(objects);
+    }
+
+    /**
+     * 处理查询属性列表的功能
+     * @return 返回列表集合
+     */
+    @ApiOperation("查询属性列表")
+    @ApiOperationSupport(order = 502)
     @GetMapping("")
     public JsonResult<List<Object>> selectList(){
         log.debug("开始处理查询属性列表的请求,无参!");

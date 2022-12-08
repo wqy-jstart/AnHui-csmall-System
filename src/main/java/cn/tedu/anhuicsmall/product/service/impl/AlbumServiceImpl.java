@@ -91,7 +91,7 @@ public class AlbumServiceImpl extends ServiceImpl<AlbumMapper, Album> implements
         Map<String, Object> map = new HashMap<>();
         map.put("album_id", albumId);
         int rows = pictureMapper.deleteByMap(map);
-        if (rows < 1) {
+        if (rows != 0) {
             String message = "删除关联图片失败,服务器忙,请稍后再试...";
             log.debug(message);
             throw new ServiceException(ServiceCode.ERR_DELETE, message);

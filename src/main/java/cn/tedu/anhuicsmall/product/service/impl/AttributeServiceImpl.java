@@ -9,6 +9,7 @@ import cn.tedu.anhuicsmall.product.pojo.entity.Attribute;
 import cn.tedu.anhuicsmall.product.pojo.entity.AttributeTemplate;
 import cn.tedu.anhuicsmall.product.service.IAttributeService;
 import cn.tedu.anhuicsmall.product.web.ServiceCode;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -140,6 +141,25 @@ public class AttributeServiceImpl extends ServiceImpl<AttributeMapper, Attribute
             throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
         }
         return queryAttribute;
+    }
+
+    /**
+     * 根据模板id查询属性列表
+     * @param templateId 模板id
+     * @return 返回属性列表
+     */
+    @Override
+    public List<Object> selectListToTemplateId(Long templateId) {
+        log.debug("开始查询属性模板id为{}的属性列表",templateId);
+        AttributeTemplate queryAttributeTemplate = attributeTemplateMapper.selectById(templateId);
+        if (queryAttributeTemplate == null){
+            String message = "查询失败,该模板数据不存在!";
+            log.debug(message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,message);
+        }
+        QueryWrapper<Attribute> wrapper = new QueryWrapper<>();
+        wrapper.eq("template_id",templateId);
+        return attributeMapper.selectObjs(wrapper);
     }
 
     /**

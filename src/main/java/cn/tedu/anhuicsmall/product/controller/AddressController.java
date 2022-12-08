@@ -96,7 +96,7 @@ public class AddressController {
     @ApiOperation("根据id查询收货地址详情")
     @ApiOperationSupport(order = 500)
     @ApiImplicitParam(name = "addressId", value = "收货地址id", required = true, dataType = "long")
-    @PostMapping("/{addressId:[0-9]+}/selectById")
+    @GetMapping("/{addressId:[0-9]+}/selectById")
     public JsonResult<Address> selectById(@Range(min = 1, message = "查询失败,该收货地址id无效!")
                                           @PathVariable Long addressId) {
         log.debug("开始处理查询id为{}的收货地址信息", addressId);

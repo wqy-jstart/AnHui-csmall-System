@@ -46,6 +46,13 @@ public interface IAttributeService extends IService<Attribute> {
     Attribute selectById(Long attributeId);
 
     /**
+     * 根据模板id查询属性列表
+     * @param templateId 模板id
+     * @return 返回属性列表
+     */
+    List<Object> selectListToTemplateId(Long templateId);
+
+    /**
      * 处理查询后台属性列表的功能
      * @return 属性列表集合
      */

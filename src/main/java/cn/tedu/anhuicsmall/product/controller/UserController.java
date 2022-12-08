@@ -93,7 +93,7 @@ public class UserController {
     @ApiOperation("根据id查询用户详情")
     @ApiOperationSupport(order = 501)
     @ApiImplicitParam(name = "userId",value = "用户id",required = true,dataType = "long")
-    @PostMapping("/{userId:[0-9]+}/selectById")
+    @GetMapping("/{userId:[0-9]+}/selectById")
     public JsonResult<User> selectById(@Range(min = 1,message = "查询失败,该用户id无效") @PathVariable Long userId){
         log.debug("开始处理查询id为[{}]的用户详情",userId);
         User user = userService.selectById(userId);

@@ -94,7 +94,7 @@ public class BrandController {
     @ApiOperation("根据id查询品牌详情")
     @ApiOperationSupport(order = 500)
     @ApiImplicitParam(name = "brandId", value = "品牌id", required = true, dataType = "long")
-    @PostMapping("/{brandId:[0-9]+}/selectById")
+    @GetMapping("/{brandId:[0-9]+}/selectById")
     public JsonResult<Brand> selectById(@Range(min = 1, message = "查询失败,该品牌id无效!")
                                         @PathVariable Long brandId) {
         log.debug("开始查询id为{}的品牌数据", brandId);
