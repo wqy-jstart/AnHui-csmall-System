@@ -47,4 +47,16 @@ public interface IBrandService extends IService<Brand> {
      * @return 品牌列表集合
      */
     List<Object> selectList();
+
+    /**
+     * 处理启用品牌的功能
+     * @param id 要启用的品牌id
+     */
+    void setEnable(Long id);
+
+    /**
+     * 处理禁用品牌的功能
+     * @param id 要禁用的品牌id
+     */
+    void setDisable(Long id);
 }

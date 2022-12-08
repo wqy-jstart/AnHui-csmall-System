@@ -167,4 +167,59 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
         log.debug("开始处理查询品牌列表的功能");
         return brandMapper.selectObjs(null);
     }
+
+    /**
+     * 处理启用品牌
+     *
+     * @param id 要启用的品牌id
+     */
+    @Override
+    public void setEnable(Long id) {
+        updateEnableById(id, 1);
+    }
+
+    /**
+     * 处理禁用品牌
+     *
+     * @param id 要禁用的品牌id
+     */
+    @Override
+    public void setDisable(Long id) {
+        updateEnableById(id, 0);
+    }
+
+    /**
+     * 处理是否启用的业务逻辑
+     *
+     * @param brandId 品牌id
+     * @param enable     1=启用;0=禁用
+     */
+    private void updateEnableById(Long brandId, Integer enable) {
+        String[] tips = {"禁用", "启用"};
+        log.debug("开始处理[{}品牌]的业务,id参数为{}", tips[enable], brandId);
+        // 根据id查询品牌详情
+        Brand querybrand = brandMapper.selectById(brandId);
+        if (querybrand == null) {
+            String message = tips[enable] + "品牌失败,尝试访问的数据不存在!";
+            log.debug(message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
+        }
+        // 判断查询结果中的enable与方法参数enable是否相同
+        if (enable.equals(querybrand.getEnable())) {
+            String message = tips[enable] + "品牌失败，管理员账号已经处于" + tips[enable] + "状态！";
+            log.debug(message);
+            throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
+        }
+        // 创建brand对象,并封装id和enable这2个属性的值,并进行修改
+        Brand brand = new Brand();
+        brand.setId(brandId);
+        brand.setEnable(enable);
+        int rows = brandMapper.updateById(brand);
+        if (rows != 1) {
+            String message = tips[enable] + "品牌失败，服务器忙，请稍后再次尝试！";
+            throw new ServiceException(ServiceCode.ERR_UPDATE, message);
+        }
+        log.debug("修改成功!");
+    }
+
 }

@@ -116,4 +116,38 @@ public class BrandController {
         return JsonResult.ok(objects);
     }
 
+    /**
+     * 启用分类
+     * @param brandId 需要启用的品牌id
+     * @return JsonResult
+     */
+    // http://localhost:9900/brands/brandId/enable
+    @ApiOperation("启用品牌")
+    @ApiOperationSupport(order = 503)
+    @ApiImplicitParam(name = "brandId",value = "启用的品牌id",required = true,dataType = "long")
+    @PostMapping("/{brandId:[0-9]+}/enable")
+    public JsonResult<Void> enable(@Range(min = 1,message = "启用分类失败,该id无效!")
+                                   @PathVariable Long brandId){
+        log.debug("开始启用品牌!");
+        brandService.setEnable(brandId);
+        return JsonResult.ok();
+    }
+
+    /**
+     * 禁用品牌
+     * @param brandId 需要禁用的品牌id
+     * @return JsonResult
+     */
+    // http://localhost:9900/brands/brandId/disable
+    @ApiOperation("禁用分类")
+    @ApiOperationSupport(order = 504)
+    @ApiImplicitParam(name = "brandId",value = "禁用的品牌id",required = true,dataType = "long")
+    @PostMapping("/{brandId:[0-9]+}/disable")
+    public JsonResult<Void> disable(@Range(min = 1,message = "禁用品牌失败,该id无效!")
+                                    @PathVariable Long brandId){
+        log.debug("开始禁用品牌!");
+        brandService.setDisable(brandId);
+        return JsonResult.ok();
+    }
+
 }

@@ -62,7 +62,7 @@ public class CategoryController {
     @ApiOperation("根据id删除分类")
     @ApiOperationSupport(order = 200)
     @ApiImplicitParam(name = "categoryId",value = "要删除的类别id",required = true,dataType = "long")
-    @PostMapping("/{categoryId:[0-9]+}/delete")
+    @PostMapping("/{categoryId:[0-9]+}/deleteById")
     public JsonResult<Void> deleteById(@Range(min = 1,message = "删除失败,该类别id无效!")
                                            @PathVariable Long categoryId) {
         log.debug("开始处理[根据id删除类别]的请求,参数为{}",categoryId);
@@ -123,10 +123,8 @@ public class CategoryController {
     // http://localhost:9900/categories/parentId/listByParent
     @ApiOperation("根据父级类别查询子级类别")
     @ApiOperationSupport(order = 502)
-    @ApiImplicitParam(name = "parentId",value = "父级id",required = true,dataType = "long")
-    @GetMapping("/{parentId:[0-9]+}/listByParent")
-    public JsonResult<List<Object>> listByParentId(@Range(min = 1,message = "查询失败,该父级id无效!")
-                                                       @PathVariable Long parentId){
+    @GetMapping("/listByParent")
+    public JsonResult<List<Object>> listByParentId(Long parentId){
         log.debug("开始处理[根据父级类别查询自己类别]的请求!");
         List<Object> list = categoryService.listByParentId(parentId);
         return JsonResult.ok(list);
