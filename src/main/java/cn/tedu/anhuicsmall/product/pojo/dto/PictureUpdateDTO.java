@@ -50,12 +50,6 @@ public class PictureUpdateDTO implements Serializable {
     private Integer height;
 
     /**
-     * 是否作为封面
-     */
-    @ApiModelProperty(value = "是否作为封面",required = true)
-    private Integer isCover;
-
-    /**
      * 图片排序
      */
     @ApiModelProperty(value = "图片排序",required = true)

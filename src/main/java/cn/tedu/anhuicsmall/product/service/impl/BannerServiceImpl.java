@@ -67,7 +67,7 @@ public class BannerServiceImpl extends ServiceImpl<BannerMapper, Banner> impleme
         }
 
         QueryWrapper<Banner> wrapperToSpuId = new QueryWrapper<>();
-        wrapper.eq("spu_id",bannerAddNewDTO.getSpuId());
+        wrapperToSpuId.eq("spu_id",bannerAddNewDTO.getSpuId());
         Integer count1 = bannerMapper.selectCount(wrapperToSpuId);
         if (count1 !=0){
             String message = "添加失败,该spu数据已经被关联!";

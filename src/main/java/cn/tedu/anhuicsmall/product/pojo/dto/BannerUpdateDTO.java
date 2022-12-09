@@ -41,12 +41,6 @@ public class BannerUpdateDTO implements Serializable {
     private String description;
 
     /**
-     * 是否启用
-     */
-    @ApiModelProperty(value = "1=启用;0=禁用", required = true)
-    private Integer enable;
-
-    /**
      * 轮播图排序
      */
     @ApiModelProperty(value = "排序",required = true)

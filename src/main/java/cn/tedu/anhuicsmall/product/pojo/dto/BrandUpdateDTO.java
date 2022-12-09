@@ -61,9 +61,4 @@ public class BrandUpdateDTO implements Serializable {
     @ApiModelProperty(value = "品牌销量",required = true)
     private Integer sales;
 
-    /**
-     * 是否启用品牌
-     */
-    @ApiModelProperty(value = "是否启用品牌",required = true)
-    private Integer enable;
 }
