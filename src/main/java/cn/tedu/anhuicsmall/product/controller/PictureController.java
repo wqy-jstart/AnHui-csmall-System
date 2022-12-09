@@ -90,7 +90,7 @@ public class PictureController {
     @ApiOperation("根据id查询图片信息")
     @ApiOperationSupport(order = 500)
     @ApiImplicitParam(name = "pictureId",value = "图片id",required = true,dataType = "long")
-    @PostMapping("/{pictureId:[0-9]+}/selectById")
+    @GetMapping("/{pictureId:[0-9]+}/selectById")
     public JsonResult<Picture> selectById(@Range(min = 1,message = "查询失败,该图片id无效!")
                                           @PathVariable Long pictureId){
         log.debug("开始处理查询id为{}的图片信息",pictureId);
@@ -119,7 +119,7 @@ public class PictureController {
     @ApiOperation("根据相册id查询图片列表")
     @ApiOperationSupport(order = 502)
     @GetMapping("/selectListToAlbumId")
-    public JsonResult<List<Object>> selectListByAlbumId(Long albumId){
+    public JsonResult<List<Object>> selectListByAlbumId(@RequestParam(value = "albumId") Long albumId){
         log.debug("开始处理查询相册id为{}下的图片列表!",albumId);
         List<Object> objects = pictureService.selectListByAlbumId(albumId);
         return JsonResult.ok(objects);
