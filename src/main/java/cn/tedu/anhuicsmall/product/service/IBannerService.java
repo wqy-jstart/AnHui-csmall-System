@@ -46,6 +46,12 @@ public interface IBannerService extends IService<Banner> {
     Banner selectById(Long bannerId);
 
     /**
+     * 查询启用的轮播图列表
+     * @return 返回列表集合
+     */
+    List<Object> selectListByEnable();
+
+    /**
      * 处理查询后台轮播图列表的功能
      * @return 轮播图列表集合
      */

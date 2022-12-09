@@ -352,7 +352,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         }
         // 判断查询结果中的enable与方法参数enable是否相同
         if (enable.equals(queryCategory.getEnable())) {
-            String message = tips[enable] + "分类失败，管理员账号已经处于" + tips[enable] + "状态！";
+            String message = tips[enable] + "分类失败，分类已经处于" + tips[enable] + "状态！";
             log.debug(message);
             throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
         }

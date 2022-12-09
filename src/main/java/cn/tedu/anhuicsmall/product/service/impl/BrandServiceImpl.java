@@ -5,6 +5,7 @@ import cn.tedu.anhuicsmall.product.mapper.BrandAndCategoryMapper;
 import cn.tedu.anhuicsmall.product.mapper.BrandMapper;
 import cn.tedu.anhuicsmall.product.pojo.dto.BrandAddNewDTO;
 import cn.tedu.anhuicsmall.product.pojo.dto.BrandUpdateDTO;
+import cn.tedu.anhuicsmall.product.pojo.entity.Banner;
 import cn.tedu.anhuicsmall.product.pojo.entity.Brand;
 import cn.tedu.anhuicsmall.product.pojo.entity.BrandAndCategory;
 import cn.tedu.anhuicsmall.product.service.IBrandService;
@@ -206,7 +207,7 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
         }
         // 判断查询结果中的enable与方法参数enable是否相同
         if (enable.equals(queryBrand.getEnable())) {
-            String message = tips[enable] + "品牌失败，管理员账号已经处于" + tips[enable] + "状态！";
+            String message = tips[enable] + "品牌失败，品牌已经处于" + tips[enable] + "状态！";
             log.debug(message);
             throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
         }

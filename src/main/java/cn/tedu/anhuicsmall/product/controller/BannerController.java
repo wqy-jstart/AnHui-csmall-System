@@ -100,11 +100,24 @@ public class BannerController {
     }
 
     /**
+     * 处理查询启用的轮播图列表数据的请求
+     * @return 返回结果集
+     */
+    @ApiOperation("查询启用的轮播图列表")
+    @ApiOperationSupport(order = 501)
+    @GetMapping("/selectListByEnable")
+    public JsonResult<List<Object>> selectListByEnable(){
+        log.debug("开始处理查询启用的轮播图数据的请求,无参!");
+        List<Object> objects = bannerService.selectListByEnable();
+        return JsonResult.ok(objects);
+    }
+
+    /**
      * 处理查询轮播图列表的请求
      * @return 返回结果集
      */
     @ApiOperation("查询轮播图列表")
-    @ApiOperationSupport(order = 501)
+    @ApiOperationSupport(order = 502)
     @GetMapping("")
     public JsonResult<List<Object>> selectList(){
         log.debug("开始处理查询轮播图列表的请求,无参!");

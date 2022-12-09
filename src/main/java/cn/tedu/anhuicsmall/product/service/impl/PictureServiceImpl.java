@@ -138,49 +138,6 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture> impl
 
         Long albumId = pictureUpdateDTO.getAlbumId(); // 获取当前修改的相册id
 
-        if (pictureUpdateDTO.getIsCover() == 1) { // 如果将当前图片修改为封面
-            // 在当前相册下的图片中查询除此次修改的图片外,是否还有isCover为1的
-            QueryWrapper<Picture> wrapper = new QueryWrapper<>();
-            wrapper.eq("album_id", albumId);
-            wrapper.ne("id", pictureUpdateDTO.getId());
-            wrapper.eq("is_cover", 1);
-            Integer count = pictureMapper.selectCount(wrapper);
-            if (count > 0) {
-                String message = "修改失败,该图片所属相册的封面已经存在!";
-                log.debug(message);
-                throw new ServiceException(ServiceCode.ERR_UPDATE, message);
-            }
-        }
-
-        if (pictureUpdateDTO.getIsCover() == 0) { // 如果将当前图片修改为非封面
-            // 前者是当前id下的相册id,后者是修改后的相册id
-            if (queryPicture.getAlbumId().equals(pictureUpdateDTO.getAlbumId())){ // 如果相等,说明还处于当前相册
-                // 在当前相册下的图片中查询除此次修改的图片外,isCover为1的数量
-                QueryWrapper<Picture> wrapper = new QueryWrapper<>();
-                wrapper.eq("album_id", albumId);
-                wrapper.ne("id", pictureUpdateDTO.getId());
-                wrapper.eq("is_cover", 1);
-                Integer count = pictureMapper.selectCount(wrapper);
-                if (count == 0) {
-                    String message = "修改失败,该图片是当前相册唯一的封面!";
-                    log.debug(message);
-                    throw new ServiceException(ServiceCode.ERR_UPDATE, message);
-                }
-            }else { //如果不相等,说明换了相册,查询该图片是否为上一个图片的封面
-                // 查询当前id之外的上一个相册isCover为1的数量
-                QueryWrapper<Picture> wrapper = new QueryWrapper<>();
-                wrapper.eq("album_id", queryPicture.getAlbumId());
-                wrapper.ne("id", pictureUpdateDTO.getId());
-                wrapper.eq("is_cover", 1);
-                Integer count = pictureMapper.selectCount(wrapper);
-                if (count == 0){
-                    String message = "修改失败,该图片是当前相册唯一的封面!";
-                    log.debug(message);
-                    throw new ServiceException(ServiceCode.ERR_UPDATE, message);
-                }
-            }
-        }
-
         log.debug("即将修改id为{}的图片数据", pictureUpdateDTO.getId());
         Picture picture = new Picture();
         BeanUtils.copyProperties(pictureUpdateDTO, picture);
@@ -296,20 +253,6 @@ public class PictureServiceImpl extends ServiceImpl<PictureMapper, Picture> impl
             Integer count = pictureMapper.selectCount(wrapper);
             if (count != 0) {
                 String message = "设置" + tips[coverId] + "失败,该图片所属相册的封面已经存在!";
-                log.debug(message);
-                throw new ServiceException(ServiceCode.ERR_UPDATE, message);
-            }
-        }
-        if (coverId == 0) { // 此步判断避免isCover为1的数据再进来查一遍sql
-            Long albumId = queryPicture.getAlbumId();
-            // 在当前相册下的图片中查询除此次修改的图片外,是否还有isCover为1的
-            QueryWrapper<Picture> wrapper = new QueryWrapper<>();
-            wrapper.eq("album_id", albumId);
-            wrapper.ne("id",pictureId);
-            wrapper.eq("is_cover", 1);
-            Integer count = pictureMapper.selectCount(wrapper);
-            if (count == 0) {
-                String message = "设置" + tips[coverId] + "失败,此图片为相册唯一的封面!";
                 log.debug(message);
                 throw new ServiceException(ServiceCode.ERR_UPDATE, message);
             }

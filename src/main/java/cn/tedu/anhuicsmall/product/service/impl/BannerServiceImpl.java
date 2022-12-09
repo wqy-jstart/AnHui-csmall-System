@@ -180,6 +180,18 @@ public class BannerServiceImpl extends ServiceImpl<BannerMapper, Banner> impleme
     }
 
     /**
+     * 查询启用的轮播图列表
+     * @return 返回列表集合
+     */
+    @Override
+    public List<Object> selectListByEnable() {
+        log.debug("开始处理查询启用的轮播图列表数据,无参!");
+        QueryWrapper<Banner> wrapper = new QueryWrapper<>();
+        wrapper.eq("enable",1);
+        return bannerMapper.selectObjs(wrapper);
+    }
+
+    /**
      * 处理查询轮播图列表的业务
      * @return 返回轮播图列表
      */
@@ -225,7 +237,7 @@ public class BannerServiceImpl extends ServiceImpl<BannerMapper, Banner> impleme
         }
         // 判断查询结果中的enable与方法参数enable是否相同
         if (enable.equals(queryBanner.getEnable())) {
-            String message = tips[enable] + "轮播图失败，管理员账号已经处于" + tips[enable] + "状态！";
+            String message = tips[enable] + "轮播图失败，轮播图已经处于" + tips[enable] + "状态！";
             log.debug(message);
             throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
         }
