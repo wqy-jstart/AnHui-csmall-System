@@ -24,6 +24,12 @@ public interface IUserService extends IService<User> {
     void insert(UserLoginDTO userLoginDTO);
 
     /**
+     * 处理用户登录的功能
+     * @param userLoginDTO 登录提供的用户信息
+     */
+    void login(UserLoginDTO userLoginDTO);
+
+    /**
      * 处理根据id删除用户的功能
      * @param userId 要删除的用户id
      */
@@ -41,6 +47,13 @@ public interface IUserService extends IService<User> {
      * @return 返回用户详情
      */
     User selectById(Long userId);
+
+    /**
+     * 根据用户名查询用户信息
+     * @param username 用户名
+     * @return 返回用户实体类
+     */
+    User selectByUserName(String username);
 
     /**
      * 处理查询后台用户列表的功能

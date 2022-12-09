@@ -24,7 +24,7 @@ CREATE TABLE ups_user
     PRIMARY KEY (id)
 ) DEFAULT CHARSET = utf8mb4 COMMENT ='用户';
 INSERT INTO ups_user(username, password, gender, age, nickname, avatar, phone, email, sign,gmt_create,gmt_modified)
-VALUES ('开发者','123456','男',19,'Devotion','https://img2.baidu.com/it/u=4244269751,
+VALUES ('admin','123456','男',19,'开发者','https://img2.baidu.com/it/u=4244269751,
 4000533845&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500','15551898016','2168149198@qq.com','我很懒,什么也不想说...', '2022-07-08 11:30:44', '2022-07-08 11:30:44');
 
 # 收货地址

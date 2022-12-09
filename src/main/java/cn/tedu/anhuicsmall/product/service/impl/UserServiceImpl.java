@@ -79,6 +79,29 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     /**
+     * 处理用户登录的业务
+     * @param userLoginDTO 登录提供的用户信息
+     */
+    @Override
+    public void login(UserLoginDTO userLoginDTO) {
+        log.debug("开始处理用户登录的业务,参数:{}",userLoginDTO);
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.eq("username",userLoginDTO.getUsername());
+        User queryUser = userMapper.selectOne(wrapper);
+        if (queryUser == null){
+            String message = "登录失败,用户名不存在!";
+            log.debug(message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,message);
+        }
+        if (!queryUser.getPassword().equals(userLoginDTO.getPassword())){
+            String message = "登录失败,密码错误,请重新输入!";
+            log.debug(message);
+            throw new ServiceException(ServiceCode.ERROR_CONFLICT,message);
+        }
+
+    }
+
+    /**
      * 根据id删除用户信息的功能
      *
      * @param userId 要删除的用户id
@@ -160,6 +183,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
         }
         return user;
+    }
+
+    /**
+     * 处理根据用户名查询用户信息的功能
+     * @param username 用户名
+     * @return 返回结果集
+     */
+    @Override
+    public User selectByUserName(String username) {
+        log.debug("开始处理根据用户名{}查询该用户的信息功能",username);
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.eq("username",username);
+        return userMapper.selectOne(wrapper);
     }
 
     /**

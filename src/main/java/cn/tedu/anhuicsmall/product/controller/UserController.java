@@ -47,10 +47,24 @@ public class UserController {
      */
     @ApiOperation("用户注册")
     @ApiOperationSupport(order = 100)
-    @PostMapping("/insert")
+    @PostMapping("/register")
     public JsonResult<Void> insert(@Valid UserLoginDTO userLoginDTO) {
         log.debug("开始处理用户注册的请求,参数:{}", userLoginDTO);
         userService.insert(userLoginDTO);
+        return JsonResult.ok();
+    }
+
+    /**
+     * 处理用户登录的请求
+     * @param userLoginDTO 用户登录的信息
+     * @return 返回结果集
+     */
+    @ApiOperation("用户登录")
+    @ApiOperationSupport(order = 120)
+    @PostMapping("/login")
+    public JsonResult<Void> login(UserLoginDTO userLoginDTO){
+        log.debug("开始处理用户登录的请求,参数:{}",userLoginDTO);
+        userService.login(userLoginDTO);
         return JsonResult.ok();
     }
 
@@ -101,12 +115,26 @@ public class UserController {
     }
 
     /**
+     * 根据用户名查询用户详情的请求
+     * @param username 用户id
+     * @return 返回结果集
+     */
+    @ApiOperation("根据用户名查询用户详情")
+    @ApiOperationSupport(order = 502)
+    @GetMapping("/selectByUsername")
+    public JsonResult<User> selectById(@RequestParam(value = "username") String username){
+        log.debug("开始处理查询用户名为[{}]的用户详情",username);
+        User user = userService.selectByUserName(username);
+        return JsonResult.ok(user);
+    }
+
+    /**
      * 查询用户列表的请求
      *
      * @return 返回结果集
      */
     @ApiOperation("查询用户列表")
-    @ApiOperationSupport(order = 502)
+    @ApiOperationSupport(order = 503)
     @GetMapping("")
     public JsonResult<List<Object>> selectList() {
         log.debug("开始处理查询用户列表的请求...无参!");
