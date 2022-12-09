@@ -20,6 +20,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -292,6 +293,12 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         QueryWrapper<Category> wrapper = new QueryWrapper<>();
         wrapper.eq("parent_id", parentId);
         return categoryMapper.selectObjs(wrapper);
+    }
+
+    @Override
+    public List<List<?>> selectRecursion() {
+        log.debug("开始处理递归查询所有类别列表,无参!");
+       return null;
     }
 
     /**

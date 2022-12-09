@@ -2,6 +2,7 @@ package cn.tedu.anhuicsmall.product.service;
 
 import cn.tedu.anhuicsmall.product.pojo.dto.CategoryAddNewDTO;
 import cn.tedu.anhuicsmall.product.pojo.dto.CategoryUpdateDTO;
+import cn.tedu.anhuicsmall.product.pojo.entity.Album;
 import cn.tedu.anhuicsmall.product.pojo.entity.Category;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,6 +61,12 @@ public interface ICategoryService extends IService<Category> {
      * @return 返回查询的子级列表
      */
     List<Object> listByParentId(Long parentId);
+
+    /**
+     * 递归查询所有类别数据
+     * @return 返回递归列表
+     */
+    List<List<?>> selectRecursion();
 
     /**
      * 处理启用分类的功能
