@@ -23,7 +23,7 @@ public interface IAlbumService extends IService<Album> {
 
     /**
      * 处理添加相册的功能
-     * @param albumAddNewDTO 注册需要的相册信息
+     * @param albumAddNewDTO 添加需要的相册信息
      */
     void insert(AlbumAddNewDTO albumAddNewDTO);
 

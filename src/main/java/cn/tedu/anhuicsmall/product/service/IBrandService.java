@@ -19,7 +19,7 @@ public interface IBrandService extends IService<Brand> {
 
     /**
      * 处理添加品牌的功能
-     * @param brandAddNewDTO 注册需要的品牌信息
+     * @param brandAddNewDTO 添加需要的品牌信息
      */
     void insert(BrandAddNewDTO brandAddNewDTO);
 

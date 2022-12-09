@@ -43,6 +43,12 @@ public interface ICategoryService extends IService<Category> {
     Category selectById(Long categoryId);
 
     /**
+     * 处理父级类别的列表
+     * @return 返回列表集合
+     */
+    List<Object> selectByParent();
+
+    /**
      * 查询类别列表信息
      * @return 返回列表集合
      */

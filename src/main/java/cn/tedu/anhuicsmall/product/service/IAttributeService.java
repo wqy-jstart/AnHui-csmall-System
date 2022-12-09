@@ -22,7 +22,7 @@ public interface IAttributeService extends IService<Attribute> {
 
     /**
      * 处理添加属性的功能
-     * @param attributeAddNewDTO 注册需要的属性信息
+     * @param attributeAddNewDTO 添加需要的属性信息
      */
     void insert(AttributeAddNewDTO attributeAddNewDTO);
 

@@ -22,7 +22,7 @@ public interface IPictureService extends IService<Picture> {
 
     /**
      * 处理添加图片的功能
-     * @param pictureAddNewDTO 注册需要的图片信息
+     * @param pictureAddNewDTO 添加需要的图片信息
      */
     void insert(PictureAddNewDTO pictureAddNewDTO);
 

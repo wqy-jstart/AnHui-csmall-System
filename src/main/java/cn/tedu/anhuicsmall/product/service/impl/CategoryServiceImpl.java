@@ -258,6 +258,18 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     }
 
     /**
+     * 查询父级类别列表
+     * @return 返回列表集合
+     */
+    @Override
+    public List<Object> selectByParent() {
+        log.debug("开始处理查询父级列表的功能,无参!");
+        QueryWrapper<Category> wrapper = new QueryWrapper<>();
+        wrapper.eq("parent_id",0);
+        return categoryMapper.selectObjs(wrapper);
+    }
+
+    /**
      * 处理查询分类列表信息
      *
      * @return 返回查询的分类列表

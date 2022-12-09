@@ -23,7 +23,7 @@ public interface IAddressService extends IService<Address> {
 
     /**
      * 处理添加收货地址的功能
-     * @param addressAddNewDTO 注册需要的收货地址信息
+     * @param addressAddNewDTO 添加需要的收货地址信息
      */
     void insert(AddressAddNewDTO addressAddNewDTO);
 

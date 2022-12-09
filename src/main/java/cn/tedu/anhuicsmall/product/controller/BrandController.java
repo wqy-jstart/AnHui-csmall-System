@@ -127,7 +127,7 @@ public class BrandController {
     @ApiOperationSupport(order = 503)
     @ApiImplicitParam(name = "brandId",value = "启用的品牌id",required = true,dataType = "long")
     @PostMapping("/{brandId:[0-9]+}/enable")
-    public JsonResult<Void> enable(@Range(min = 1,message = "启用分类失败,该id无效!")
+    public JsonResult<Void> enable(@Range(min = 1,message = "启用品牌失败,该id无效!")
                                    @PathVariable Long brandId){
         log.debug("开始启用品牌!");
         brandService.setEnable(brandId);

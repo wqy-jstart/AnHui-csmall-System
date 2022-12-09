@@ -20,7 +20,7 @@ public interface IAttributeTemplateService extends IService<AttributeTemplate> {
 
     /**
      * 处理添加属性模板的功能
-     * @param attributeTemplateAddNewDTO 注册需要的属性模板信息
+     * @param attributeTemplateAddNewDTO 添加需要的属性模板信息
      */
     void insert(AttributeTemplateAddNewDTO attributeTemplateAddNewDTO);
 

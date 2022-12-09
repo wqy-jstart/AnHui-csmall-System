@@ -103,11 +103,24 @@ public class CategoryController {
     }
 
     /**
+     * 查询父级类别列表的请求
+     * @return 返回列表信息
+     */
+    @ApiOperation("查询父级类别列表")
+    @ApiOperationSupport(order = 501)
+    @GetMapping("/selectByParent")
+    public JsonResult<List<Object>> selectByParent(){
+        log.debug("开始处理查询父级类别列表的请求,无参!");
+        List<Object> objects = categoryService.selectByParent();
+        return JsonResult.ok(objects);
+    }
+
+    /**
      * 处理查询分类列表的功能
      * @return 返回结果集
      */
     @ApiOperation("查询分类列表")
-    @ApiOperationSupport(order = 501)
+    @ApiOperationSupport(order = 502)
     @GetMapping("")
     // http://localhost:9900/categories/
     public JsonResult<List<Object>> list(){
@@ -123,7 +136,7 @@ public class CategoryController {
      */
     // http://localhost:9900/categories/parentId/listByParent
     @ApiOperation("根据父级类别查询子级类别")
-    @ApiOperationSupport(order = 502)
+    @ApiOperationSupport(order = 503)
     @GetMapping("/listByParent")
     public JsonResult<List<Object>> listByParentId(Long parentId){
         log.debug("开始处理[根据父级类别查询自己类别]的请求!");
@@ -138,7 +151,7 @@ public class CategoryController {
      */
     // http://localhost:9900/categories/categoryId/enable
     @ApiOperation("启用分类")
-    @ApiOperationSupport(order = 503)
+    @ApiOperationSupport(order = 504)
     @ApiImplicitParam(name = "categoryId",value = "启用的分类id",required = true,dataType = "long")
     @PostMapping("/{categoryId:[0-9]+}/enable")
     public JsonResult<Void> enable(@Range(min = 1,message = "启用分类失败,该id无效!")
@@ -155,7 +168,7 @@ public class CategoryController {
      */
     // http://localhost:9900/categories/categoryId/disable
     @ApiOperation("禁用分类")
-    @ApiOperationSupport(order = 504)
+    @ApiOperationSupport(order = 505)
     @ApiImplicitParam(name = "categoryId",value = "禁用的分类id",required = true,dataType = "long")
     @PostMapping("/{categoryId:[0-9]+}/disable")
     public JsonResult<Void> disable(@Range(min = 1,message = "禁用分类失败,该id无效!")
@@ -172,7 +185,7 @@ public class CategoryController {
      */
     // http://localhost:9900/categories/categoryId/display
     @ApiOperation("显示分类")
-    @ApiOperationSupport(order = 505)
+    @ApiOperationSupport(order = 506)
     @ApiImplicitParam(name = "categoryId",value = "显示的分类id",required = true,dataType = "long")
     @PostMapping("/{categoryId:[0-9]+}/display")
     public JsonResult<Void> display(@Range(min = 1,message = "显示分类失败,该id无效!")
@@ -189,7 +202,7 @@ public class CategoryController {
      */
     // http://localhost:9900/categories/categoryId/hidden
     @ApiOperation("隐藏分类")
-    @ApiOperationSupport(order = 506)
+    @ApiOperationSupport(order = 507)
     @ApiImplicitParam(name = "categoryId",value = "隐藏的分类id",required = true,dataType = "long")
     @PostMapping("/{categoryId:[0-9]+}/hidden")
     public JsonResult<Void> hidden(@Range(min = 1,message = "隐藏分类失败,该id无效!")
