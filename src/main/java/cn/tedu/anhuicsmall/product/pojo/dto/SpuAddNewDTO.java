@@ -96,12 +96,6 @@ public class SpuAddNewDTO implements Serializable {
     private Long albumId;
 
     /**
-     * 图片集合
-     */
-    @ApiModelProperty(value = "图片集合")
-    private String pictures;
-
-    /**
      * 关键字列表
      */
     @ApiModelProperty(value = "关键字列表")

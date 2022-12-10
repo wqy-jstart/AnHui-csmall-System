@@ -1,13 +1,10 @@
 package cn.tedu.anhuicsmall.product.service.impl;
 
 import cn.tedu.anhuicsmall.product.ex.ServiceException;
-import cn.tedu.anhuicsmall.product.mapper.SpuDetailMapper;
-import cn.tedu.anhuicsmall.product.mapper.SpuMapper;
+import cn.tedu.anhuicsmall.product.mapper.*;
 import cn.tedu.anhuicsmall.product.pojo.dto.SpuAddNewDTO;
 import cn.tedu.anhuicsmall.product.pojo.dto.SpuUpdateDTO;
-import cn.tedu.anhuicsmall.product.pojo.entity.Category;
-import cn.tedu.anhuicsmall.product.pojo.entity.Spu;
-import cn.tedu.anhuicsmall.product.pojo.entity.SpuDetail;
+import cn.tedu.anhuicsmall.product.pojo.entity.*;
 import cn.tedu.anhuicsmall.product.service.ISpuService;
 import cn.tedu.anhuicsmall.product.web.ServiceCode;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -43,6 +40,18 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
     @Autowired
     private SpuDetailMapper spuDetailMapper;
 
+    // 注入品牌的持久层接口
+    @Autowired
+    private BrandMapper brandMapper;
+
+    // 注入分类的持久层接口
+    @Autowired
+    private CategoryMapper categoryMapper;
+
+    // 注入属性模板的持久层接口
+    @Autowired
+    private AttributeTemplateMapper attributeTemplateMapper;
+
     /**
      * 处理添加Spu的数据
      *
@@ -51,8 +60,36 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
     @Override
     public void insert(SpuAddNewDTO spuAddNewDTO) {
         log.debug("开始处理添加Spu的业务,参数:{}", spuAddNewDTO);
+        log.debug("开始验证品牌是否存在...");
+        Brand brand = brandMapper.selectById(spuAddNewDTO.getBrandId());
+        if (brand == null) {
+            String message = "添加失败,该Spu的品牌不存在!";
+            log.debug(message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
+        }
+
+        log.debug("开始验证分类是否存在...");
+
+        Category category = categoryMapper.selectById(spuAddNewDTO.getCategoryId());
+        if (category == null) {
+            String message = "添加失败,该Spu的分类不存在!";
+            log.debug(message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
+        }
+
+        log.debug("开始验证属性模板是否存在...");
+
+        AttributeTemplate attributeTemplate = attributeTemplateMapper.selectById(spuAddNewDTO.getAttributeTemplateId());
+        if (attributeTemplate == null) {
+            String message = "添加失败,该Spu的属性模板不存在!";
+            log.debug(message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
+        }
+
+        log.debug("即将插入Spu数据...");
         Spu spu = new Spu();
         BeanUtils.copyProperties(spuAddNewDTO, spu);
+        log.debug("开始插入Spu数据...参数:{}",spu);
         int rows = spuMapper.insert(spu);
         if (rows > 1) {
             String message = "添加失败,服务器忙,请稍后再试...";
@@ -63,7 +100,7 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
         log.debug("即将向spu详情表中添加数据...");
         SpuDetail spuDetail = new SpuDetail();
         spuDetail.setSpuId(spu.getId());
-        spuDetail.setDetail(spuDetail.getDetail());
+        spuDetail.setDetail(spuAddNewDTO.getDetail());
         log.debug("开始向spu详情表中添加数据,参数:{}", spuDetail);
         int rowsToDetail = spuDetailMapper.insert(spuDetail);
         if (rowsToDetail > 1) {
@@ -92,6 +129,14 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
         map.put("spu_id", spuId);
         int rows = spuDetailMapper.deleteByMap(map);
         if (rows > 1) {
+            String message = "删除失败,服务器忙,请稍后再试...";
+            log.debug(message);
+            throw new ServiceException(ServiceCode.ERR_DELETE, message);
+        }
+
+        log.debug("开始执行删除Spu的功能...");
+        int row = spuMapper.deleteById(spuId);
+        if (row > 1) {
             String message = "删除失败,服务器忙,请稍后再试...";
             log.debug(message);
             throw new ServiceException(ServiceCode.ERR_DELETE, message);
@@ -128,7 +173,9 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
             SpuDetail spuDetail = new SpuDetail();
             spuDetail.setSpuId(spuUpdateDTO.getId());
             spuDetail.setDetail(spuUpdateDTO.getDetail());
-            int rowsToDetail = spuDetailMapper.updateById(spuDetail);
+            QueryWrapper<SpuDetail> wrapper = new QueryWrapper<>();
+            wrapper.eq("spu_id",spuUpdateDTO.getId());
+            int rowsToDetail = spuDetailMapper.update(spuDetail,wrapper);
             if (rowsToDetail > 1) {
                 String message = "添加失败,服务器忙,请稍后再试...";
                 log.debug(message);
@@ -298,6 +345,14 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
             String message = tips[check] + "Spu失败，分类已经处于" + tips[check] + "状态！";
             log.debug(message);
             throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
+        }
+
+        if (check == 0) { // 如果要设置为未审核状态
+            if (querySpu.getIsPublished() == 1) { // 上架状态
+                String message = tips[check] + "Spu失败,未经审核,商品不允许启用上架!";
+                log.debug(message);
+                throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
+            }
         }
         // 创建Spu对象,并封装id和publish这2个属性的值,并进行修改
         Spu spu = new Spu();
