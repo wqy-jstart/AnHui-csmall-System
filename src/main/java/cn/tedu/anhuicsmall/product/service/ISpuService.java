@@ -75,6 +75,20 @@ public interface ISpuService extends IService<Spu> {
     void setNotPublish(Long id);
 
     /**
+     * 处理推荐Spu的功能
+     *
+     * @param id 要推荐的SpuId
+     */
+    void setRecommend(Long id);
+
+    /**
+     * 处理不推荐Spu的功能
+     *
+     * @param id 不推荐的SpId
+     */
+    void setNotRecommend(Long id);
+
+    /**
      * 处理审核Spu的功能
      *
      * @param id 要启用的SpuId

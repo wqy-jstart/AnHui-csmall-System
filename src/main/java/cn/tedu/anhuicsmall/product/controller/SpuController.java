@@ -166,6 +166,40 @@ public class SpuController {
     }
 
     /**
+     * 设置推荐spu
+     *
+     * @param spuId 需要推荐的spuId
+     * @return JsonResult
+     */
+    @ApiOperation("设置推荐Spu")
+    @ApiOperationSupport(order = 505)
+    @ApiImplicitParam(name = "spuId", value = "推荐的spuId", required = true, dataType = "long")
+    @PostMapping("/{spuId:[0-9]+}/recommend")
+    public JsonResult<Void> setRecommend(@Range(min = 1, message = "推荐Spu失败,该id无效!")
+                                     @PathVariable Long spuId) {
+        log.debug("开始处理推荐Spu的请求!");
+        spuService.setRecommend(spuId);
+        return JsonResult.ok();
+    }
+
+    /**
+     * 设置不推荐spu
+     *
+     * @param spuId 需要不推荐的spuId
+     * @return JsonResult
+     */
+    @ApiOperation("设置不推荐Spu")
+    @ApiOperationSupport(order = 505)
+    @ApiImplicitParam(name = "spuId", value = "不推荐的spuId", required = true, dataType = "long")
+    @PostMapping("/{spuId:[0-9]+}/notRecommend")
+    public JsonResult<Void> setNotRecommend(@Range(min = 1, message = "不推荐Spu失败,该id无效!")
+                                         @PathVariable Long spuId) {
+        log.debug("开始处理不推荐Spu的请求!");
+        spuService.setNotRecommend(spuId);
+        return JsonResult.ok();
+    }
+
+    /**
      * 设置审核spu
      *
      * @param spuId 需要审核的spuId

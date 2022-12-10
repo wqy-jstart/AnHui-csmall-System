@@ -244,6 +244,24 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
     }
 
     /**
+     * 推荐的SpuId
+     * @param id 要推荐的SpuId
+     */
+    @Override
+    public void setRecommend(Long id) {
+        updateRecommendById(id,1);
+    }
+
+    /**
+     * 不推荐的SpuId
+     * @param id 不推荐的SpId
+     */
+    @Override
+    public void setNotRecommend(Long id) {
+        updateRecommendById(id,0);
+    }
+
+    /**
      * 处理审核的功能
      *
      * @param id 要审核的spuId
@@ -319,6 +337,39 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
         int rows = spuMapper.updateById(spu);
         if (rows != 1) {
             String message = tips[publish] + "Spu失败，服务器忙，请稍后再次尝试！";
+            throw new ServiceException(ServiceCode.ERR_UPDATE, message);
+        }
+        log.debug("修改成功!");
+    }
+
+    /**
+     * 处理是否推荐的业务逻辑
+     * @param spuId 推荐的SpuId
+     * @param recommend 1=推荐;0=不推荐
+     */
+    private void updateRecommendById(Long spuId, Integer recommend) {
+        String[] tips = {"推荐", "不推荐"};
+        log.debug("开始处理[{}Spu]的业务,id参数为{}", tips[recommend], spuId);
+        // 根据id查询分类详情
+        Spu querySpu = spuMapper.selectById(spuId);
+        if (querySpu == null) {
+            String message = tips[recommend] + "Spu失败,尝试访问的数据不存在!";
+            log.debug(message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
+        }
+        // 判断查询结果中的check与方法参数check是否相同
+        if (recommend.equals(querySpu.getIsRecommend())) {
+            String message = tips[recommend] + "Spu失败，分类已经处于" + tips[recommend] + "状态！";
+            log.debug(message);
+            throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
+        }
+        // 创建Spu对象,并封装id和publish这2个属性的值,并进行修改
+        Spu spu = new Spu();
+        spu.setId(spuId);
+        spu.setIsRecommend(recommend);
+        int rows = spuMapper.updateById(spu);
+        if (rows != 1) {
+            String message = tips[recommend] + "Spu失败，服务器忙，请稍后再次尝试！";
             throw new ServiceException(ServiceCode.ERR_UPDATE, message);
         }
         log.debug("修改成功!");
