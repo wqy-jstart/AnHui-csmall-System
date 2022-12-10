@@ -1,27 +1,15 @@
-package cn.tedu.anhuicsmall.product.pojo.entity;
+package cn.tedu.anhuicsmall.product.pojo.dto;
 
-import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
- * 这是商品的SPU详情类,最终上架商品的所有信息
- *
- * @Author java@Wqy
- * @Version 0.0.1
+ * 添加Spu的DTO类
  */
 @Data
-@TableName("ups_spu")
-public class Spu implements Serializable {
-
-    /**
-     * SPU商品id
-     */
-    @TableId(type = IdType.AUTO)
-    private Long id;
+public class SpuAddNewDTO implements Serializable {
 
     /**
      * SPU名称
@@ -138,6 +126,12 @@ public class Spu implements Serializable {
     private Integer sort;
 
     /**
+     * 详情信息
+     */
+    @ApiModelProperty(value = "spu的详情信息")
+    private String detail;
+
+    /**
      * 是否上架(1=已上架;0=已下架)
      */
     @ApiModelProperty(value = "是否上架(1=已上架;0=已下架)")
@@ -160,16 +154,4 @@ public class Spu implements Serializable {
      */
     @ApiModelProperty(value = "审核人")
     private String checkUser;
-
-    /**
-     * 数据创建时间
-     */
-    @TableField(fill = FieldFill.INSERT)
-    private Date gmtCreate;
-
-    /**
-     * 数据修改时间
-     */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Date gmtModified;
 }

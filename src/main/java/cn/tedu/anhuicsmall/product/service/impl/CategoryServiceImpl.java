@@ -295,12 +295,6 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         return categoryMapper.selectObjs(wrapper);
     }
 
-    @Override
-    public List<List<?>> selectRecursion() {
-        log.debug("开始处理递归查询所有类别列表,无参!");
-       return null;
-    }
-
     /**
      * 处理启用分类
      *

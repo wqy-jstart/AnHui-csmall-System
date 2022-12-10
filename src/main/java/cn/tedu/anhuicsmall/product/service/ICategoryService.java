@@ -63,12 +63,6 @@ public interface ICategoryService extends IService<Category> {
     List<Object> listByParentId(Long parentId);
 
     /**
-     * 递归查询所有类别数据
-     * @return 返回递归列表
-     */
-    List<List<?>> selectRecursion();
-
-    /**
      * 处理启用分类的功能
      * @param id 要启用的分类id
      */
