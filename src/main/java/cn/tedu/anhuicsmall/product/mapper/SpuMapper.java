@@ -22,4 +22,10 @@ public interface SpuMapper extends BaseMapper<Spu> {
      * @return 返回List集合
      */
     List<SpuIndexListVO> selectIndexSpu();
+
+    /**
+     * 查询根据销量降序排列的Spu列表
+     * @return 返回列表信息
+     */
+    List<SpuIndexListVO> selectSortByTitle();
 }

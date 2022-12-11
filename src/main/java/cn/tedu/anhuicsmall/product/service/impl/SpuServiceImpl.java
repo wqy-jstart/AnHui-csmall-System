@@ -193,6 +193,16 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
     }
 
     /**
+     * 查询根据销量排序的Spu主页列表信息
+     * @return 返回列表信息
+     */
+    @Override
+    public List<SpuIndexListVO> selectSortByTitle() {
+        log.debug("开始处理根据商品标题降序的功能,无参!");
+        return spuMapper.selectSortByTitle();
+    }
+
+    /**
      * 处理上架的功能
      *
      * @param id 要上架的spuId

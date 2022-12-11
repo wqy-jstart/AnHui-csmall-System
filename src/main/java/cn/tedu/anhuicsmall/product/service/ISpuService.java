@@ -69,6 +69,12 @@ public interface ISpuService extends IService<Spu> {
     List<Object> selectByIsPC();
 
     /**
+     * 查询根据商品标题进行排序的列表
+     * @return 返回排序后的列表信息
+     */
+    List<SpuIndexListVO> selectSortByTitle();
+
+    /**
      * 处理上架Spu的功能
      *
      * @param id 要启用的SpuId

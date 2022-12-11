@@ -146,6 +146,19 @@ public class SpuController {
     }
 
     /**
+     * 处理查询由销量降序的上架商品
+     * @return 返回列表信息
+     */
+    @ApiOperation("查询由销量降序的上架商品")
+    @ApiOperationSupport(order = 503)
+    @GetMapping("/selectSortByTitle")
+    public JsonResult<List<SpuIndexListVO>> selectSortByTitle(){
+        log.debug("开始处理根据销量降序排列的Spu主页列表的请求,无参!");
+        List<SpuIndexListVO> listVOS = spuService.selectSortByTitle();
+        return JsonResult.ok(listVOS);
+    }
+
+    /**
      * 设置上架spu
      *
      * @param spuId 需要上架的spuId

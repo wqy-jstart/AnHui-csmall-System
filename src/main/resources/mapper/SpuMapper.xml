@@ -12,7 +12,9 @@
                       ON ups_spu.album_id = ups_album.id
                  JOIN csmall_ups.ups_picture
                       ON ups_picture.album_id = ups_album.id
-        WHERE ups_picture.is_cover = 1;
+        WHERE ups_picture.is_cover = 1
+          AND ups_spu.is_published = 1
+          AND ups_spu.is_checked = 1;
     </select>
     <resultMap id="QueryResult" type="cn.tedu.anhuicsmall.product.pojo.vo.SpuIndexListVO">
         <id column="id" property="spuId"/>
@@ -21,5 +23,20 @@
         <result column="views" property="views"/>
         <result column="sales" property="sales"/>
         <result column="url" property="url"/>
+    </resultMap>
+
+    <!--List<String> selectSortByTitle();-->
+    <select id="selectSortByTitle" resultMap="QueryToSort">
+        SELECT title, sales
+        FROM csmall_ups.ups_spu
+        WHERE is_published = 1
+          AND is_checked = 1
+        ORDER BY sales DESC
+        LIMIT 0 ,10;
+    </select>
+
+    <resultMap id="QueryToSort" type="cn.tedu.anhuicsmall.product.pojo.vo.SpuIndexListVO">
+        <result column="title" property="title"/>
+        <result column="sales" property="sales"/>
     </resultMap>
 </mapper>
