@@ -126,10 +126,22 @@ public class Spu implements Serializable {
     private Integer sales;
 
     /**
+     * 浏览量
+     */
+    @ApiModelProperty(value = "浏览量")
+    private Integer views;
+
+    /**
      * 排序
      */
     @ApiModelProperty(value = "排序")
     private Integer sort;
+
+    /**
+     * 详情信息
+     */
+    @ApiModelProperty(value = "spu的详情信息")
+    private String detail;
 
     /**
      * 是否上架(1=已上架;0=已下架)

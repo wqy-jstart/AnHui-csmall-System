@@ -13,6 +13,9 @@ spring:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  # 配置Mapper路径
+  mapper-locations: classpath:mapper/*xml
+
 
 # 日志的显示级别默认info(根包尽量这样写,若简写会扩大不必要的范围,多写比较麻烦)
 logging:

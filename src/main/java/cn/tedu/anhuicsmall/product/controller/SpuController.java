@@ -4,6 +4,7 @@ package cn.tedu.anhuicsmall.product.controller;
 import cn.tedu.anhuicsmall.product.pojo.dto.SpuAddNewDTO;
 import cn.tedu.anhuicsmall.product.pojo.dto.SpuUpdateDTO;
 import cn.tedu.anhuicsmall.product.pojo.entity.Spu;
+import cn.tedu.anhuicsmall.product.pojo.vo.SpuIndexListVO;
 import cn.tedu.anhuicsmall.product.service.ISpuService;
 import cn.tedu.anhuicsmall.product.web.JsonResult;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
@@ -104,12 +105,25 @@ public class SpuController {
     }
 
     /**
+     * 处理查询主页Spu列表的请求
+     * @return 返回Spu主页列表信息
+     */
+    @ApiOperation("查询主页Spu列表")
+    @ApiOperationSupport(order = 501)
+    @GetMapping("/selectIndexList")
+    public JsonResult<List<SpuIndexListVO>> selectIndexList(){
+        log.debug("开始处理查询Spu主页列表的信息,无参!");
+        List<SpuIndexListVO> spuIndexListVOS = spuService.selectIndexSpu();
+        return JsonResult.ok(spuIndexListVOS);
+    }
+
+    /**
      * 查询未上架的SPU列表
      *
      * @return 返回上架的Spu列表
      */
     @ApiOperation("查询未上架的SPU列表")
-    @ApiOperationSupport(order = 501)
+    @ApiOperationSupport(order = 502)
     @GetMapping("/selectByNotP")
     public JsonResult<List<Object>> selectByP() {
         log.debug("开始处理查询未上架的Spu列表,无参!");
@@ -123,7 +137,7 @@ public class SpuController {
      * @return 返回上架及审核的Spu列表
      */
     @ApiOperation("查询上架及审核的SPU列表")
-    @ApiOperationSupport(order = 502)
+    @ApiOperationSupport(order = 503)
     @GetMapping("/selectByPC")
     public JsonResult<List<Object>> selectByPC() {
         log.debug("开始处理查询上架及审核的Spu列表,无参!");
@@ -138,7 +152,7 @@ public class SpuController {
      * @return JsonResult
      */
     @ApiOperation("设置上架Spu")
-    @ApiOperationSupport(order = 503)
+    @ApiOperationSupport(order = 504)
     @ApiImplicitParam(name = "spuId", value = "上架的spuId", required = true, dataType = "long")
     @PostMapping("/{spuId:[0-9]+}/publish")
     public JsonResult<Void> setPublish(@Range(min = 1, message = "上架Spu失败,该id无效!")
@@ -155,7 +169,7 @@ public class SpuController {
      * @return JsonResult
      */
     @ApiOperation("设置下架Spu")
-    @ApiOperationSupport(order = 504)
+    @ApiOperationSupport(order = 505)
     @ApiImplicitParam(name = "spuId", value = "下架的spuId", required = true, dataType = "long")
     @PostMapping("/{spuId:[0-9]+}/notPublish")
     public JsonResult<Void> setNotPublish(@Range(min = 1, message = "下架Spu失败,该id无效!")
@@ -172,7 +186,7 @@ public class SpuController {
      * @return JsonResult
      */
     @ApiOperation("设置推荐Spu")
-    @ApiOperationSupport(order = 505)
+    @ApiOperationSupport(order = 506)
     @ApiImplicitParam(name = "spuId", value = "推荐的spuId", required = true, dataType = "long")
     @PostMapping("/{spuId:[0-9]+}/recommend")
     public JsonResult<Void> setRecommend(@Range(min = 1, message = "推荐Spu失败,该id无效!")
@@ -189,7 +203,7 @@ public class SpuController {
      * @return JsonResult
      */
     @ApiOperation("设置不推荐Spu")
-    @ApiOperationSupport(order = 505)
+    @ApiOperationSupport(order = 507)
     @ApiImplicitParam(name = "spuId", value = "不推荐的spuId", required = true, dataType = "long")
     @PostMapping("/{spuId:[0-9]+}/notRecommend")
     public JsonResult<Void> setNotRecommend(@Range(min = 1, message = "不推荐Spu失败,该id无效!")
@@ -206,7 +220,7 @@ public class SpuController {
      * @return JsonResult
      */
     @ApiOperation("设置审核Spu")
-    @ApiOperationSupport(order = 505)
+    @ApiOperationSupport(order = 508)
     @ApiImplicitParam(name = "spuId", value = "审核的spuId", required = true, dataType = "long")
     @PostMapping("/{spuId:[0-9]+}/check")
     public JsonResult<Void> setCheck(@Range(min = 1, message = "审核Spu失败,该id无效!")
@@ -223,7 +237,7 @@ public class SpuController {
      * @return JsonResult
      */
     @ApiOperation("设置未审核的Spu")
-    @ApiOperationSupport(order = 506)
+    @ApiOperationSupport(order = 509)
     @ApiImplicitParam(name = "spuId", value = "未审核的spuId", required = true, dataType = "long")
     @PostMapping("/{spuId:[0-9]+}/notCheck")
     public JsonResult<Void> setNotCheck(@Range(min = 1, message = "设置未审核Spu失败,该id无效!")

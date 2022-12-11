@@ -3,6 +3,7 @@ package cn.tedu.anhuicsmall.product.service;
 import cn.tedu.anhuicsmall.product.pojo.dto.SpuAddNewDTO;
 import cn.tedu.anhuicsmall.product.pojo.dto.SpuUpdateDTO;
 import cn.tedu.anhuicsmall.product.pojo.entity.Spu;
+import cn.tedu.anhuicsmall.product.pojo.vo.SpuIndexListVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +46,13 @@ public interface ISpuService extends IService<Spu> {
      * @return 返回实体类
      */
     Spu selectById(Long spuId);
+
+    /**
+     * 查询主页的Spu显示列表信息
+     * @return 返回列表信息
+     */
+    List<SpuIndexListVO> selectIndexSpu();
+
 
     /**
      * 查询未上架的Spu列表

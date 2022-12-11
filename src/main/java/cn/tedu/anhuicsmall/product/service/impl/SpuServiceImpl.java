@@ -5,6 +5,7 @@ import cn.tedu.anhuicsmall.product.mapper.*;
 import cn.tedu.anhuicsmall.product.pojo.dto.SpuAddNewDTO;
 import cn.tedu.anhuicsmall.product.pojo.dto.SpuUpdateDTO;
 import cn.tedu.anhuicsmall.product.pojo.entity.*;
+import cn.tedu.anhuicsmall.product.pojo.vo.SpuIndexListVO;
 import cn.tedu.anhuicsmall.product.service.ISpuService;
 import cn.tedu.anhuicsmall.product.web.ServiceCode;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -14,9 +15,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Field;
+import java.util.*;
 
 /**
  * 商品Spu的业务层接口实现类
@@ -35,10 +35,6 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
     // 注入Spu的持久层接口
     @Autowired
     private SpuMapper spuMapper;
-
-    // 注入Spu详情的持久层接口
-    @Autowired
-    private SpuDetailMapper spuDetailMapper;
 
     // 注入品牌的持久层接口
     @Autowired
@@ -89,21 +85,9 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
         log.debug("即将插入Spu数据...");
         Spu spu = new Spu();
         BeanUtils.copyProperties(spuAddNewDTO, spu);
-        log.debug("开始插入Spu数据...参数:{}",spu);
+        log.debug("开始插入Spu数据...参数:{}", spu);
         int rows = spuMapper.insert(spu);
         if (rows > 1) {
-            String message = "添加失败,服务器忙,请稍后再试...";
-            log.debug(message);
-            throw new ServiceException(ServiceCode.ERR_INSERT, message);
-        }
-
-        log.debug("即将向spu详情表中添加数据...");
-        SpuDetail spuDetail = new SpuDetail();
-        spuDetail.setSpuId(spu.getId());
-        spuDetail.setDetail(spuAddNewDTO.getDetail());
-        log.debug("开始向spu详情表中添加数据,参数:{}", spuDetail);
-        int rowsToDetail = spuDetailMapper.insert(spuDetail);
-        if (rowsToDetail > 1) {
             String message = "添加失败,服务器忙,请稍后再试...";
             log.debug(message);
             throw new ServiceException(ServiceCode.ERR_INSERT, message);
@@ -123,15 +107,6 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
             String message = "删除失败,该Spu数据不存在!";
             log.debug(message);
             throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
-        }
-        // 删除与该SpuId关联的详情信息
-        Map<String, Object> map = new HashMap<>();
-        map.put("spu_id", spuId);
-        int rows = spuDetailMapper.deleteByMap(map);
-        if (rows > 1) {
-            String message = "删除失败,服务器忙,请稍后再试...";
-            log.debug(message);
-            throw new ServiceException(ServiceCode.ERR_DELETE, message);
         }
 
         log.debug("开始执行删除Spu的功能...");
@@ -167,22 +142,6 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
             log.debug(message);
             throw new ServiceException(ServiceCode.ERR_UPDATE, message);
         }
-        // 判断修改的详情信息是否与原来的一致
-        SpuDetail querySpuDetail = spuDetailMapper.selectById(spuUpdateDTO.getId());
-        if (!querySpuDetail.getDetail().equals(spuUpdateDTO.getDetail())) { // 如果不一致,将详情表中内容也修改了
-            SpuDetail spuDetail = new SpuDetail();
-            spuDetail.setSpuId(spuUpdateDTO.getId());
-            spuDetail.setDetail(spuUpdateDTO.getDetail());
-            QueryWrapper<SpuDetail> wrapper = new QueryWrapper<>();
-            wrapper.eq("spu_id",spuUpdateDTO.getId());
-            int rowsToDetail = spuDetailMapper.update(spuDetail,wrapper);
-            if (rowsToDetail > 1) {
-                String message = "添加失败,服务器忙,请稍后再试...";
-                log.debug(message);
-                throw new ServiceException(ServiceCode.ERR_INSERT, message);
-            }
-        }
-
     }
 
     /**
@@ -201,6 +160,16 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
             throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
         }
         return querySpu;
+    }
+
+    /**
+     * 处理返回主页Spu列表的功能
+     * @return 返回主页列表
+     */
+    @Override
+    public List<SpuIndexListVO> selectIndexSpu() {
+        log.debug("开始处理查询主页Spu列表信息的功能,无参!");
+        return spuMapper.selectIndexSpu();
     }
 
     /**
@@ -245,20 +214,22 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
 
     /**
      * 推荐的SpuId
+     *
      * @param id 要推荐的SpuId
      */
     @Override
     public void setRecommend(Long id) {
-        updateRecommendById(id,1);
+        updateRecommendById(id, 1);
     }
 
     /**
      * 不推荐的SpuId
+     *
      * @param id 不推荐的SpId
      */
     @Override
     public void setNotRecommend(Long id) {
-        updateRecommendById(id,0);
+        updateRecommendById(id, 0);
     }
 
     /**
@@ -344,7 +315,8 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
 
     /**
      * 处理是否推荐的业务逻辑
-     * @param spuId 推荐的SpuId
+     *
+     * @param spuId     推荐的SpuId
      * @param recommend 1=推荐;0=不推荐
      */
     private void updateRecommendById(Long spuId, Integer recommend) {

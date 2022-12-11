@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tedu.anhuicsmall.product.mapper.SpuMapper">
+
+    <!--List<SpuIndexListVO> selectIndexSpu();-->
+    <select id="selectIndexSpu" resultMap="QueryResult">
+        SELECT ups_spu.id, ups_spu.title, ups_spu.list_price, ups_spu.views, ups_spu.sales, ups_picture.url
+        FROM csmall_ups.ups_spu
+                 JOIN csmall_ups.ups_album
+                      ON ups_spu.album_id = ups_album.id
+                 JOIN csmall_ups.ups_picture
+                      ON ups_picture.album_id = ups_album.id
+        WHERE ups_picture.is_cover = 1;
+    </select>
+    <resultMap id="QueryResult" type="cn.tedu.anhuicsmall.product.pojo.vo.SpuIndexListVO">
+        <id column="id" property="spuId"/>
+        <result column="title" property="title"/>
+        <result column="list_price" property="listPrice"/>
+        <result column="views" property="views"/>
+        <result column="sales" property="sales"/>
+        <result column="url" property="url"/>
+    </resultMap>
+</mapper>
