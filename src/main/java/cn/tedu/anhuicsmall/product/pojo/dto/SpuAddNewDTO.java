@@ -44,6 +44,12 @@ public class SpuAddNewDTO implements Serializable {
     private Integer listPrice;
 
     /**
+     * 显示在主页中的价格
+     */
+    @ApiModelProperty(value = "显示在主页中的价格")
+    private Integer indexPrice;
+
+    /**
      * 当前库存
      */
     @ApiModelProperty(value = "当前库存")

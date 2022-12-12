@@ -44,6 +44,12 @@ public class SpuUpdateDTO implements Serializable {
     private Integer listPrice;
 
     /**
+     * 显示在主页中的价格
+     */
+    @ApiModelProperty(value = "显示在主页中的价格")
+    private Integer indexPrice;
+
+    /**
      * 标签列表
      */
     @ApiModelProperty(value = "标签列表")
