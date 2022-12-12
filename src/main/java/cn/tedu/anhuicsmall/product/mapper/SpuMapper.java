@@ -1,6 +1,9 @@
 package cn.tedu.anhuicsmall.product.mapper;
 
+import cn.tedu.anhuicsmall.product.pojo.entity.Attribute;
+import cn.tedu.anhuicsmall.product.pojo.entity.Picture;
 import cn.tedu.anhuicsmall.product.pojo.entity.Spu;
+import cn.tedu.anhuicsmall.product.pojo.vo.ProductDetailVO;
 import cn.tedu.anhuicsmall.product.pojo.vo.SpuIndexListVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -42,4 +45,25 @@ public interface SpuMapper extends BaseMapper<Spu> {
      * @return 返回列表信息
      */
     List<SpuIndexListVO> selectByWd(String wd);
+
+    /**
+     * 根据SpuId查询商品详情信息
+     * @param spuId 商品id
+     * @return 返回实体类
+     */
+    ProductDetailVO selectDetailById(Long spuId);
+
+    /**
+     * 根据spuId查询属性列表
+     * @param spuId spuId
+     * @return 返回属性列表
+     */
+    List<Attribute> selectBySpuId(Long spuId);
+
+    /**
+     * 根据spuId查询图片url
+     * @param spuId spuId
+     * @return 返回url列表
+     */
+    List<Picture> selectToPictureUrls(Long spuId);
 }

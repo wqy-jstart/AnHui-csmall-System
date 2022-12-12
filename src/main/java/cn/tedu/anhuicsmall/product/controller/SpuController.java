@@ -4,6 +4,7 @@ package cn.tedu.anhuicsmall.product.controller;
 import cn.tedu.anhuicsmall.product.pojo.dto.SpuAddNewDTO;
 import cn.tedu.anhuicsmall.product.pojo.dto.SpuUpdateDTO;
 import cn.tedu.anhuicsmall.product.pojo.entity.Spu;
+import cn.tedu.anhuicsmall.product.pojo.vo.ProductDetailVO;
 import cn.tedu.anhuicsmall.product.pojo.vo.SpuIndexListVO;
 import cn.tedu.anhuicsmall.product.service.ISpuService;
 import cn.tedu.anhuicsmall.product.web.JsonResult;
@@ -103,6 +104,20 @@ public class SpuController {
         log.debug("开始处理查询id为{}的Spu数据", spuId);
         Spu spu = spuService.selectById(spuId);
         return JsonResult.ok(spu);
+    }
+
+    /**
+     * 处理根据SpuId查询商品详情
+     * @param spuId spuId
+     * @return 返回详情实体类
+     */
+    @ApiOperation("根据SpuId查询商品详情")
+    @ApiOperationSupport(order = 500)
+    @GetMapping("/selectToDetail")
+    public JsonResult<ProductDetailVO> selectToDetail(@RequestParam(value = "spuId") Long spuId){
+        log.debug("开始处理根据spuId[{}]查询商品详情信息",spuId);
+        ProductDetailVO productDetailVO = spuService.selectDetailById(spuId);
+        return JsonResult.ok(productDetailVO);
     }
 
     /**

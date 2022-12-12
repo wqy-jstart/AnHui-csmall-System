@@ -67,6 +67,82 @@
         WHERE ups_picture.is_cover = 1
           AND ups_spu.is_published = 1
           AND ups_spu.is_checked = 1
-          AND ups_spu.title LIKE CONCAT('%',#{wd},'%');
+          AND ups_spu.title LIKE CONCAT('%', #{wd}, '%');
+    </select>
+
+    <!--ProductDetailVO selectDetailById(Long spuId);-->
+    <select id="selectDetailById" resultMap="QueryDetailResult">
+        SELECT ups_spu.id ,
+               ups_spu.title,
+               ups_spu.brand_name,
+               ups_spu.category_name,
+               ups_spu.list_price,
+               ups_spu.index_price,
+               ups_spu.sales,
+               ups_spu.views,
+               ups_spu.tags,
+               ups_picture.url,
+               ups_spu.is_recommend,
+               ups_spu.detail,
+               ups_spu.stock,
+               ups_spu.gmt_create
+        FROM csmall_ups.ups_spu
+                 JOIN csmall_ups.ups_brand
+                      ON ups_spu.brand_id = ups_brand.id
+                 JOIN csmall_ups.ups_category
+                      ON ups_spu.category_id = ups_category.id
+                 JOIN csmall_ups.ups_album
+                      ON ups_spu.album_id = ups_album.id
+                 JOIN csmall_ups.ups_picture
+                      ON ups_picture.album_id = ups_album.id
+        WHERE ups_picture.is_cover = 1
+          AND ups_spu.is_checked = 1
+          AND ups_spu.is_published = 1
+          AND ups_spu.id = #{spuId};
+    </select>
+    <resultMap id="QueryDetailResult" type="cn.tedu.anhuicsmall.product.pojo.vo.ProductDetailVO">
+        <id column="id" property="spuId"/>
+        <result column="title" property="title"/>
+        <result column="brand_name" property="brandName"/>
+        <result column="category_name" property="categoryName"/>
+        <result column="list_price" property="listPrice"/>
+        <result column="index_price" property="indexPrice"/>
+        <result column="sales" property="sales"/>
+        <result column="views" property="views"/>
+        <result column="url" property="url"/>
+        <result column="is_commend" property="isCommend"/>
+        <result column="detail" property="detail"/>
+        <result column="stock" property="stock"/>
+        <result column="gmt_create" property="gmtCreate"/>
+    </resultMap>
+
+    <!--List<Attribute> selectBySpuId(Long spuId);-->
+    <select id="selectBySpuId" resultMap="queryToAttribute">
+        SELECT ups_attribute.value_list, ups_attribute.unit
+        FROM csmall_ups.ups_spu
+                 JOIN csmall_ups.ups_picture
+                      ON ups_spu.album_id = ups_picture.album_id
+                 JOIN csmall_ups.ups_attribute
+                      ON ups_spu.attribute_template_id = ups_attribute.template_id
+        WHERE ups_picture.is_cover = 1
+          AND ups_spu.is_published = 1
+          AND ups_spu.is_checked = 1
+          AND ups_spu.id = #{spuId};
+    </select>
+    <resultMap id="queryToAttribute" type="cn.tedu.anhuicsmall.product.pojo.entity.Attribute">
+        <result column="value_list" property="valueList"/>
+        <result column="unit" property="unit"/>
+    </resultMap>
+
+    <!--List<String> selectToPictureUrls(Long spuId);-->
+    <select id="selectToPictureUrls" resultType="cn.tedu.anhuicsmall.product.pojo.entity.Picture">
+        SELECT ups_picture.url
+        FROM csmall_ups.ups_spu
+                 JOIN csmall_ups.ups_picture
+                      ON ups_spu.album_id = ups_picture.album_id
+        WHERE ups_picture.is_cover = 0
+          AND ups_spu.is_published = 1
+          AND ups_spu.is_checked = 1
+          AND ups_spu.id = #{spuId};
     </select>
 </mapper>

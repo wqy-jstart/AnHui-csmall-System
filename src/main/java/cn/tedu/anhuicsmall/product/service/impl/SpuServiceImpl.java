@@ -5,6 +5,7 @@ import cn.tedu.anhuicsmall.product.mapper.*;
 import cn.tedu.anhuicsmall.product.pojo.dto.SpuAddNewDTO;
 import cn.tedu.anhuicsmall.product.pojo.dto.SpuUpdateDTO;
 import cn.tedu.anhuicsmall.product.pojo.entity.*;
+import cn.tedu.anhuicsmall.product.pojo.vo.ProductDetailVO;
 import cn.tedu.anhuicsmall.product.pojo.vo.SpuIndexListVO;
 import cn.tedu.anhuicsmall.product.service.ISpuService;
 import cn.tedu.anhuicsmall.product.web.ServiceCode;
@@ -47,6 +48,18 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
     // 注入属性模板的持久层接口
     @Autowired
     private AttributeTemplateMapper attributeTemplateMapper;
+
+    // 注入属性的持久层接口
+    @Autowired
+    private AttributeMapper attributeMapper;
+
+    // 注入相册的持久层接口
+    @Autowired
+    private AlbumMapper albumMapper;
+
+    // 注入图片的持久层接口
+    @Autowired
+    private PictureMapper pictureMapper;
 
     /**
      * 处理添加Spu的数据
@@ -160,6 +173,20 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
             throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
         }
         return querySpu;
+    }
+
+    /**
+     * 处理查询商品详情信息的功能
+     * @param spuId 商品id
+     * @return 返回详情信息
+     */
+    @Override
+    public ProductDetailVO selectDetailById(Long spuId) {
+        log.debug("开始处理根据SpuId[{}]查询商品详情信息",spuId);
+        ProductDetailVO productDetailVO = spuMapper.selectDetailById(spuId);
+        productDetailVO.setAttributeList(spuMapper.selectBySpuId(spuId));
+        productDetailVO.setUrls(spuMapper.selectToPictureUrls(spuId));
+        return productDetailVO;
     }
 
     /**
