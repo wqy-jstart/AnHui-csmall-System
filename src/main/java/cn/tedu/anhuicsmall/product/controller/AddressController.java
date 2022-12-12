@@ -15,6 +15,7 @@ import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.spring.web.json.Json;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -102,6 +103,20 @@ public class AddressController {
         log.debug("开始处理查询id为{}的收货地址信息", addressId);
         Address address = addressService.selectById(addressId);
         return JsonResult.ok(address);
+    }
+
+    /**
+     * 处理根据用户id查询收货信息列表
+     * @param userId 用户id
+     * @return 返回收货列表
+     */
+    @ApiOperation("根据用户id查询收货列表")
+    @ApiOperationSupport(order = 501)
+    @GetMapping("/selectByUserId")
+    public JsonResult<List<Object>> selectByUserId(@RequestParam(value = "id") Long userId){
+        log.debug("开始处理查询用户id为{}的收货信息列表",userId);
+        List<Object> objects = addressService.selectByUserId(userId);
+        return JsonResult.ok(objects);
     }
 
     /**

@@ -60,6 +60,12 @@ public class User implements Serializable {
     private String avatar;
 
     /**
+     * 手机号
+     */
+    @ApiModelProperty(value = "手机号",required = true)
+    private String phone;
+
+    /**
      * 电子邮件
      */
     @ApiModelProperty(value = "电子邮件",required = true)

@@ -47,6 +47,13 @@ public interface IAddressService extends IService<Address> {
     Address selectById(Long addressId);
 
     /**
+     * 根据用户id查询收货信息列表
+     * @param userId 用户id
+     * @return 返回收货列表
+     */
+    List<Object> selectByUserId(Long userId);
+
+    /**
      * 处理查询后台收货地址列表的功能
      * @return 收货地址列表集合
      */

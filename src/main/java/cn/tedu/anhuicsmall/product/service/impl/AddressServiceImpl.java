@@ -9,6 +9,7 @@ import cn.tedu.anhuicsmall.product.pojo.entity.Address;
 import cn.tedu.anhuicsmall.product.pojo.entity.User;
 import cn.tedu.anhuicsmall.product.service.IAddressService;
 import cn.tedu.anhuicsmall.product.web.ServiceCode;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -144,6 +145,26 @@ public class AddressServiceImpl extends ServiceImpl<AddressMapper, Address> impl
         }
 
         return queryAddress;
+    }
+
+    /**
+     * 处理根据用户id查询收货信息列表的功能
+     * @param userId 用户id
+     * @return 返回收货信息列表
+     */
+    @Override
+    public List<Object> selectByUserId(Long userId) {
+        log.debug("开始处理根据用户id{}查询收货信息列表的功能",userId);
+        User queryUser = userMapper.selectById(userId);
+        if (queryUser == null){
+            String message = "查询失败,该用户id不存在!";
+            log.debug(message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,message);
+        }
+
+        QueryWrapper<Address> wrapper = new QueryWrapper<>();
+        wrapper.eq("user_id",userId);
+        return addressMapper.selectObjs(wrapper);
     }
 
     /**
