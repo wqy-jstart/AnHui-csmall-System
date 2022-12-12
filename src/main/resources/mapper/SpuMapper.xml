@@ -39,4 +39,34 @@
         <result column="title" property="title"/>
         <result column="sales" property="sales"/>
     </resultMap>
+
+    <!--List<SpuIndexListVO> selectByCategoryId(Long categoryId);-->
+    <select id="selectByCategoryId" resultMap="QueryResult">
+        SELECT ups_spu.id, ups_spu.title, ups_spu.list_price, ups_spu.views, ups_spu.sales, ups_picture.url
+        FROM csmall_ups.ups_spu
+                 JOIN csmall_ups.ups_category
+                      ON ups_spu.category_id = ups_category.id
+                 JOIN csmall_ups.ups_album
+                      ON ups_spu.album_id = ups_album.id
+                 JOIN csmall_ups.ups_picture
+                      ON ups_picture.album_id = ups_album.id
+        WHERE ups_picture.is_cover = 1
+          AND ups_category.parent_id = #{categoryId}
+          AND ups_spu.is_published = 1
+          AND ups_spu.is_checked = 1;
+    </select>
+
+    <!--List<SpuIndexListVO> selectByWd(String wd);-->
+    <select id="selectByWd" resultMap="QueryResult">
+        SELECT ups_spu.id, ups_spu.title, ups_spu.list_price, ups_spu.views, ups_spu.sales, ups_picture.url
+        FROM csmall_ups.ups_spu
+                 JOIN csmall_ups.ups_album
+                      ON ups_spu.album_id = ups_album.id
+                 JOIN csmall_ups.ups_picture
+                      ON ups_picture.album_id = ups_album.id
+        WHERE ups_picture.is_cover = 1
+          AND ups_spu.is_published = 1
+          AND ups_spu.is_checked = 1
+          AND ups_spu.title LIKE CONCAT('%',#{wd},'%');
+    </select>
 </mapper>

@@ -16,4 +16,9 @@ public class SpuServiceImplTests {
     public void selectSortByTitle(){
         spuService.selectSortByTitle().forEach(System.out::println);
     }
+
+    @Test
+    public void selectByCategoryId(){
+        spuService.selectByCategoryId(3L).forEach(System.out::println);
+    }
 }

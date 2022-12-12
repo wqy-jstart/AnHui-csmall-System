@@ -164,6 +164,7 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
 
     /**
      * 处理返回主页Spu列表的功能
+     *
      * @return 返回主页列表
      */
     @Override
@@ -194,12 +195,36 @@ public class SpuServiceImpl extends ServiceImpl<SpuMapper, Spu> implements ISpuS
 
     /**
      * 查询根据销量排序的Spu主页列表信息
+     *
      * @return 返回列表信息
      */
     @Override
     public List<SpuIndexListVO> selectSortByTitle() {
         log.debug("开始处理根据商品标题降序的功能,无参!");
         return spuMapper.selectSortByTitle();
+    }
+
+    /**
+     * 处理根据分类id查询Spu列表的功能
+     *
+     * @param categoryId 分类id
+     * @return 返回列表信息
+     */
+    @Override
+    public List<SpuIndexListVO> selectByCategoryId(Long categoryId) {
+        log.debug("处理根据分类id查询商品Spu列表的功能");
+        return spuMapper.selectByCategoryId(categoryId);
+    }
+
+    /**
+     * 模糊查询商品列表信息
+     * @param wd 模糊字段
+     * @return 返回列表数据
+     */
+    @Override
+    public List<SpuIndexListVO> selectByWd(String wd) {
+        log.debug("开始处理根据模糊字段:{}模糊查询商品列表信息", wd);
+        return spuMapper.selectByWd(wd);
     }
 
     /**

@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -49,7 +50,7 @@ public class SpuController {
     @ApiOperation("添加Spu")
     @ApiOperationSupport(order = 100)
     @PostMapping("/insert")
-    public JsonResult<Void> insert(SpuAddNewDTO spuAddNewDTO) {
+    public JsonResult<Void> insert(@Valid SpuAddNewDTO spuAddNewDTO) {
         log.debug("开始处理添加Spu的请求,参数:{}", spuAddNewDTO);
         spuService.insert(spuAddNewDTO);
         return JsonResult.ok();
@@ -150,12 +151,40 @@ public class SpuController {
      * @return 返回列表信息
      */
     @ApiOperation("查询由销量降序的上架商品")
-    @ApiOperationSupport(order = 503)
+    @ApiOperationSupport(order = 504)
     @GetMapping("/selectSortByTitle")
     public JsonResult<List<SpuIndexListVO>> selectSortByTitle(){
         log.debug("开始处理根据销量降序排列的Spu主页列表的请求,无参!");
         List<SpuIndexListVO> listVOS = spuService.selectSortByTitle();
         return JsonResult.ok(listVOS);
+    }
+
+    /**
+     * 处理根据父级类别查询子级商品信息的请求
+     * @param categoryId 父级类别id
+     * @return 返回列表信息
+     */
+    @ApiOperation("根据父级类别查询子级商品信息")
+    @ApiOperationSupport(order = 505)
+    @GetMapping("/selectByCategoryId")
+    public JsonResult<List<SpuIndexListVO>> selectByCategoryId(@RequestParam(value = "categoryId") Long categoryId){
+        log.debug("开始处理根据父级类别id[{}]查询子级商品列表的请求",categoryId);
+        List<SpuIndexListVO> spuIndexListVOS = spuService.selectByCategoryId(categoryId);
+        return JsonResult.ok(spuIndexListVOS);
+    }
+
+    /**
+     * 处理根据模糊字段查询商品信息列表的请求
+     * @param wd 模糊字段
+     * @return 返回列表
+     */
+    @ApiOperation("根据模糊字段查询商品信息列表")
+    @ApiOperationSupport(order = 506)
+    @GetMapping("/selectByWd")
+    public JsonResult<List<SpuIndexListVO>> selectByWd(@RequestParam(value = "wd") String wd){
+        log.debug("开始处理根据模糊字段[{}]查询商品信息列表的请求",wd);
+        List<SpuIndexListVO> spuIndexListVOS = spuService.selectByWd(wd);
+        return JsonResult.ok(spuIndexListVOS);
     }
 
     /**
@@ -165,7 +194,7 @@ public class SpuController {
      * @return JsonResult
      */
     @ApiOperation("设置上架Spu")
-    @ApiOperationSupport(order = 504)
+    @ApiOperationSupport(order = 507)
     @ApiImplicitParam(name = "spuId", value = "上架的spuId", required = true, dataType = "long")
     @PostMapping("/{spuId:[0-9]+}/publish")
     public JsonResult<Void> setPublish(@Range(min = 1, message = "上架Spu失败,该id无效!")
@@ -182,7 +211,7 @@ public class SpuController {
      * @return JsonResult
      */
     @ApiOperation("设置下架Spu")
-    @ApiOperationSupport(order = 505)
+    @ApiOperationSupport(order = 508)
     @ApiImplicitParam(name = "spuId", value = "下架的spuId", required = true, dataType = "long")
     @PostMapping("/{spuId:[0-9]+}/notPublish")
     public JsonResult<Void> setNotPublish(@Range(min = 1, message = "下架Spu失败,该id无效!")
@@ -199,7 +228,7 @@ public class SpuController {
      * @return JsonResult
      */
     @ApiOperation("设置推荐Spu")
-    @ApiOperationSupport(order = 506)
+    @ApiOperationSupport(order = 509)
     @ApiImplicitParam(name = "spuId", value = "推荐的spuId", required = true, dataType = "long")
     @PostMapping("/{spuId:[0-9]+}/recommend")
     public JsonResult<Void> setRecommend(@Range(min = 1, message = "推荐Spu失败,该id无效!")
@@ -216,7 +245,7 @@ public class SpuController {
      * @return JsonResult
      */
     @ApiOperation("设置不推荐Spu")
-    @ApiOperationSupport(order = 507)
+    @ApiOperationSupport(order = 510)
     @ApiImplicitParam(name = "spuId", value = "不推荐的spuId", required = true, dataType = "long")
     @PostMapping("/{spuId:[0-9]+}/notRecommend")
     public JsonResult<Void> setNotRecommend(@Range(min = 1, message = "不推荐Spu失败,该id无效!")
@@ -233,7 +262,7 @@ public class SpuController {
      * @return JsonResult
      */
     @ApiOperation("设置审核Spu")
-    @ApiOperationSupport(order = 508)
+    @ApiOperationSupport(order = 511)
     @ApiImplicitParam(name = "spuId", value = "审核的spuId", required = true, dataType = "long")
     @PostMapping("/{spuId:[0-9]+}/check")
     public JsonResult<Void> setCheck(@Range(min = 1, message = "审核Spu失败,该id无效!")
@@ -250,7 +279,7 @@ public class SpuController {
      * @return JsonResult
      */
     @ApiOperation("设置未审核的Spu")
-    @ApiOperationSupport(order = 509)
+    @ApiOperationSupport(order = 512)
     @ApiImplicitParam(name = "spuId", value = "未审核的spuId", required = true, dataType = "long")
     @PostMapping("/{spuId:[0-9]+}/notCheck")
     public JsonResult<Void> setNotCheck(@Range(min = 1, message = "设置未审核Spu失败,该id无效!")

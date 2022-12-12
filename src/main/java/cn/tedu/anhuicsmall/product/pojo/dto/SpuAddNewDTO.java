@@ -3,6 +3,7 @@ package cn.tedu.anhuicsmall.product.pojo.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -21,6 +22,7 @@ public class SpuAddNewDTO implements Serializable {
      * SPU编号
      */
     @ApiModelProperty(value = "SPU编号")
+    @NotNull
     private String typeNumber;
 
     /**

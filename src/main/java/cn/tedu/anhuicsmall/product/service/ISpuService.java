@@ -75,6 +75,20 @@ public interface ISpuService extends IService<Spu> {
     List<SpuIndexListVO> selectSortByTitle();
 
     /**
+     * 根据分类id查询商品列表的功能
+     * @param categoryId 分类id
+     * @return 返回商品列表
+     */
+    List<SpuIndexListVO> selectByCategoryId(Long categoryId);
+
+    /**
+     * 模糊查询主页商品列表
+     * @param wd 模糊字段
+     * @return 返回列表信息
+     */
+    List<SpuIndexListVO> selectByWd(String wd);
+
+    /**
      * 处理上架Spu的功能
      *
      * @param id 要启用的SpuId

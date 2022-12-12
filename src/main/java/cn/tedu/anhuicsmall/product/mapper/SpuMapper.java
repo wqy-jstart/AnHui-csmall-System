@@ -28,4 +28,18 @@ public interface SpuMapper extends BaseMapper<Spu> {
      * @return 返回列表信息
      */
     List<SpuIndexListVO> selectSortByTitle();
+
+    /**
+     * 查询根据分类id查询主页列表信息的功能
+     * @param categoryId 分类id
+     * @return 返回分类信息
+     */
+    List<SpuIndexListVO> selectByCategoryId(Long categoryId);
+
+    /**
+     * 模糊查询主页商品列表
+     * @param wd 模糊字段
+     * @return 返回列表信息
+     */
+    List<SpuIndexListVO> selectByWd(String wd);
 }
