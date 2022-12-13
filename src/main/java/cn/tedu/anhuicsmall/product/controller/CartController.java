@@ -80,6 +80,7 @@ public class CartController {
     public JsonResult<List<CartListVO>> selectToCartList(@RequestParam(value = "id") Long userId){
         log.debug("开始处理根据用户id查询购物车列表数据");
         List<CartListVO> cartListVOS = cartService.selectCartListByUserId(userId);
+        log.debug("返回的数据:{}",cartListVOS);
         return JsonResult.ok(cartListVOS);
     }
 }

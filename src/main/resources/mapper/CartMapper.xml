@@ -4,50 +4,6 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.tedu.anhuicsmall.product.mapper.CartMapper">
 
-    <!--int selectToCount(Long userId);-->
-    <select id="selectToCount" resultType="int">
-        SELECT COUNT(*)
-        FROM csmall_ups.ups_cart
-                 JOIN csmall_ups.ups_user
-                      ON ups_user.id = ups_cart.user_id
-                 JOIN csmall_ups.ups_spu
-                      ON ups_cart.spu_id = ups_spu.id
-        WHERE ups_spu.is_published = 1
-          AND ups_spu.is_checked = 1
-          AND ups_user.id = #{userId};
-    </select>
-
-    <!--List<Long> selectToSpuId(Long userId);-->
-    <select id="selectToSpuId" resultType="long">
-        SELECT ups_spu.id
-        FROM csmall_ups.ups_cart
-                 JOIN csmall_ups.ups_user
-                      ON ups_user.id = ups_cart.user_id
-                 JOIN csmall_ups.ups_spu
-                      ON ups_cart.spu_id = ups_spu.id
-        WHERE ups_spu.is_published = 1
-          AND ups_spu.is_checked = 1
-          AND ups_user.id = #{userId};
-    </select>
-
-    <!--List<Attribute> selectToAttribute(Long spuId);-->
-    <select id="selectToAttribute" resultMap="QueryToAttribute">
-        SELECT ups_attribute.value_list, ups_attribute.unit
-        FROM csmall_ups.ups_cart
-                 JOIN csmall_ups.ups_user
-                      ON ups_user.id = ups_cart.user_id
-                 JOIN csmall_ups.ups_spu
-                      ON ups_cart.spu_id = ups_spu.id
-                 JOIN csmall_ups.ups_attribute
-                      ON ups_spu.attribute_template_id = ups_attribute.template_id
-        WHERE ups_spu.is_published = 1
-          AND ups_spu.is_checked = 1
-          AND ups_spu.id = #{spuId};
-    </select>
-    <resultMap id="QueryToAttribute" type="cn.tedu.anhuicsmall.product.pojo.entity.Attribute">
-        <result column="value_list" property="valueList"/>
-        <result column="unit" property="unit"/>
-    </resultMap>
 
     <!--List<CartListVO> selectCartListByUserId(Long userId);-->
     <select id="selectCartListByUserId" resultMap="QueryResultToCart">
@@ -58,6 +14,7 @@
                ups_spu.brand_name,
                ups_spu.category_name,
                ups_spu.tags,
+               ups_spu.num,
                ups_spu.detail,
                ups_picture.url
         FROM csmall_ups.ups_cart

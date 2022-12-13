@@ -53,15 +53,16 @@ public class CartListVO implements Serializable {
     private String tags;
 
     /**
+     * 商品数量
+     */
+    @ApiModelProperty(value = "数量")
+    private Integer num;
+
+    /**
      * 详情信息
      */
     @ApiModelProperty(value = "spu的详情信息")
     private String detail;
-
-    /**
-     * 属性集合
-     */
-    private List<Attribute> attributeList;
 
     /**
      * 图片封面
