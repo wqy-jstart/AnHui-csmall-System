@@ -144,6 +144,12 @@ public class Spu implements Serializable {
     private Integer sort;
 
     /**
+     * 购买数量
+     */
+    @ApiModelProperty(value = "购买数量")
+    private Integer num;
+
+    /**
      * 详情信息
      */
     @ApiModelProperty(value = "spu的详情信息")
