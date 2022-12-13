@@ -63,6 +63,12 @@ CREATE TABLE ups_cart
     gmt_modified datetime            DEFAULT NULL COMMENT '数据最后修改时间',
     PRIMARY KEY (id)
 ) DEFAULT CHARSET = utf8mb4 COMMENT ='购物车';
+INSERT INTO ups_cart(user_id, spu_id, gmt_create, gmt_modified)
+VALUES (1, 4, '2022-07-08 11:30:44', '2022-07-08 11:30:44'),
+       (1, 5, '2022-07-08 11:30:44', '2022-07-08 11:30:44'),
+       (1, 6, '2022-07-08 11:30:44', '2022-07-08 11:30:44'),
+       (1, 7, '2022-07-08 11:30:44', '2022-07-08 11:30:44'),
+       (1, 8, '2022-07-08 11:30:44', '2022-07-08 11:30:44');
 
 # 轮播图
 DROP TABLE IF EXISTS ups_banner;
