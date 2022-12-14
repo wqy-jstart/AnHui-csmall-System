@@ -16,7 +16,6 @@ public class UserLoginDTO implements Serializable {
      * 用户名
      */
     @ApiModelProperty(value = "用户名",required = true)
-    @NotNull
     private String username;
 
     /**

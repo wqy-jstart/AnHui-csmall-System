@@ -68,6 +68,26 @@
             <version>3.0.5</version>
         </dependency>
 
+        <!-- Spring Boot security的依赖项,用于用户认证和用户授权 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- fastjson：实现对象与JSON的相互转换 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.75</version>
+        </dependency>
+
+        <!-- JJWT（Java JWT） -->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+
         <!--Spring boot测试的依赖项-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

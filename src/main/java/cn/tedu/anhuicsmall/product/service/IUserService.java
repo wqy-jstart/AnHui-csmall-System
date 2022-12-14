@@ -27,7 +27,7 @@ public interface IUserService extends IService<User> {
      * 处理用户登录的功能
      * @param userLoginDTO 登录提供的用户信息
      */
-    void login(UserLoginDTO userLoginDTO);
+    String login(UserLoginDTO userLoginDTO);
 
     /**
      * 处理根据id删除用户的功能

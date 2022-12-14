@@ -9,19 +9,26 @@ import cn.tedu.anhuicsmall.product.pojo.dto.UserUpdateDTO;
 import cn.tedu.anhuicsmall.product.pojo.entity.Cart;
 import cn.tedu.anhuicsmall.product.pojo.entity.Spu;
 import cn.tedu.anhuicsmall.product.pojo.entity.User;
-import cn.tedu.anhuicsmall.product.pojo.vo.UserListItemVO;
-import cn.tedu.anhuicsmall.product.pojo.vo.UserStandardVO;
+import cn.tedu.anhuicsmall.product.security.AdminDetails;
 import cn.tedu.anhuicsmall.product.service.IUserService;
+import cn.tedu.anhuicsmall.product.util.BCryptEncode;
 import cn.tedu.anhuicsmall.product.web.ServiceCode;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * 用户的业务层接口实现类
@@ -32,6 +39,12 @@ import java.util.List;
 @Slf4j
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
+
+    // 读取配置文件application-dev.yml中的自定义配置
+    @Value("${anhuicsmall.jwt.secret-key}")
+    private String secretKey;
+    @Value("${anhuicsmall.jwt.duration-in-minute}")
+    private long durationInMinute;
 
     public UserServiceImpl() {
         log.debug("创建业务层接口实现类:UserServiceImpl");
@@ -48,6 +61,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     // 注入商品spu的持久层接口
     @Autowired
     private SpuMapper spuMapper;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     /**
      * 处理用户注册的业务
@@ -69,6 +85,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         log.debug("即将向用户表中插入数据...");
         User user = new User();
         BeanUtils.copyProperties(userLoginDTO, user);
+        user.setPassword(BCryptEncode.encryptionPassword(userLoginDTO.getPassword()));
         log.debug("开始向用户表中插入数据,参数:{}", user);
         int rows = userMapper.insert(user);
         if (rows > 1) {
@@ -83,22 +100,54 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
      * @param userLoginDTO 登录提供的用户信息
      */
     @Override
-    public void login(UserLoginDTO userLoginDTO) {
-        log.debug("开始处理用户登录的业务,参数:{}",userLoginDTO);
-        QueryWrapper<User> wrapper = new QueryWrapper<>();
-        wrapper.eq("username",userLoginDTO.getUsername());
-        User queryUser = userMapper.selectOne(wrapper);
-        if (queryUser == null){
-            String message = "登录失败,用户名不存在!";
-            log.debug(message);
-            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,message);
-        }
-        if (!queryUser.getPassword().equals(userLoginDTO.getPassword())){
-            String message = "登录失败,密码错误,请重新输入!";
-            log.debug(message);
-            throw new ServiceException(ServiceCode.ERROR_CONFLICT,message);
-        }
+    public String login(UserLoginDTO userLoginDTO) {
+        log.debug("开始处理[管理员登录]的业务,参数:{}", userLoginDTO);
 
+        // 1.处理认证
+        Authentication authentication
+                = new UsernamePasswordAuthenticationToken(
+                userLoginDTO.getUsername(), userLoginDTO.getPassword()
+        );
+        // 开始认证
+        Authentication authenticateResult
+                = authenticationManager.authenticate(authentication);
+
+        log.debug("认证通过,认证管理器返回:{}", authenticateResult);
+
+        // 2.认证成功后获取当事人对象
+        Object principal = authenticateResult.getPrincipal();
+        log.debug("认证结果中的当事人类型:{}", principal.getClass().getName());
+        AdminDetails adminDetails = (AdminDetails) principal;
+
+        // 3.获取认证结果
+        String username = adminDetails.getUsername();
+        Long id = adminDetails.getId();
+        Collection<GrantedAuthority> authorities = adminDetails.getAuthorities();
+        String authoritiesJsonString = JSON.toJSONString(authorities);
+
+        // 生成JWT数据前将数据填充到Map中
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("username", username);
+        claims.put("id", id);
+        claims.put("authoritiesJsonString", authoritiesJsonString);
+        log.debug("向JWT中存入用户名:{}", username);
+        log.debug("向JWT中存入id:{}", id);
+        log.debug("向JWT中存入authoritiesJsonString:{}", authoritiesJsonString);
+
+        // 4.生成JWT数据
+        Date date = new Date(System.currentTimeMillis() + durationInMinute * 60 * 1000L);
+        String jwt = Jwts.builder() //构建者模式
+                // Header
+                .setHeaderParam("alg", "HS256") // 指定算法
+                .setHeaderParam("trp", "JWT") // 指定类型
+                // Payload 载荷
+                .setClaims(claims) // 传入Map
+                // Signature 签名
+                .setExpiration(date)
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+        log.debug("生成的JWT：{}", jwt);
+        return jwt;// 最终返回认证后的JWT
     }
 
     /**

@@ -4,6 +4,11 @@ import cn.tedu.anhuicsmall.product.ex.ServiceException;
 import cn.tedu.anhuicsmall.product.web.JsonResult;
 import cn.tedu.anhuicsmall.product.web.ServiceCode;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -48,16 +53,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     public JsonResult<Void> handlerBindException(BindException e){// 因为该异常的信息不是我们自己定的,而状态信息是我们定的,故调用两参的fail()
         log.debug("开始处理BindException----检查不通过的异常");
-        // 第一种方式(将所有异常一同获取并遍历)
-        // 需要拼接输出结果时使用(delimiter分隔符 prefix前缀 suffix后缀)
-//        StringJoiner stringJoiner = new StringJoiner(",","请求参数格式错误,","!!!");
-//        List<FieldError> fieldErrors = e.getFieldErrors();// 获取该异常的结果集合
-//        for (FieldError fieldError : fieldErrors){ // 遍历获取的结果集合
-//            String defaultMessage = fieldError.getDefaultMessage();// 获取validation框架中参数传递错误时@NotNull(message = "?")注解中提示的信息
-//            stringJoiner.add(defaultMessage);//将获取的提示信息add到stringJoiner中
-//        }
 
-        //第二种方式"快速失败"(一次仅获取一次异常)
+        //"快速失败"(一次仅获取一次异常)
         String defaultMessage = e.getFieldError().getDefaultMessage();//Spring框架提供的API,直接获取某一个错误信息
 
         return JsonResult.fail(ServiceCode.ERR_BAD_REQUEST,defaultMessage);//调用JsonResult中的fail()方法,转传入入自定义的枚举属性和处理后的提示错误信息
@@ -80,13 +77,57 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * Spring Security框架----用户名或密码错误
+     *
+     * @param e AuthenticationException
+     * @return 返回失败的JsonResult
+     */
+    @ExceptionHandler({
+            InternalAuthenticationServiceException.class, // AuthenticationServiceException >>> AuthenticationException
+            BadCredentialsException.class // AuthenticationException
+    })
+    public JsonResult<Void> handleAuthenticationException(AuthenticationException e) {// 参数列表中应当是注解中异常的共同"父类"
+        log.debug("捕获到:AuthenticationException");
+        log.debug("异常类型:{}", e.getClass().getName());// 输出对应类型异常的完全限定名
+        log.debug("异常消息:{}", e.getMessage());// 用户名或密码错误
+        String message = "登录失败,用户名或密码错误";
+        return JsonResult.fail(ServiceCode.ERR_UNAUTHORIZED, message);
+    }
+
+    /**
+     * Spring Security框架----账号被禁用的异常
+     *
+     * @param e DisabledException
+     * @return 返回账号被禁用的异常
+     */
+    @ExceptionHandler
+    public JsonResult<Void> handleDisabledException(DisabledException e) {
+        log.debug("捕获到:DisabledException");
+        String message = "登录失败，该账号已被禁用!";
+        return JsonResult.fail(ServiceCode.ERR_UNAUTHORIZED_DISABLED, message);
+    }
+
+    /**
+     * Spring Security框架----没有权限访问----通过认证,但没权限,故由全局异常来处理
+     *
+     * @param e AccessDeniedException
+     * @return 返回因权限受限而无法访问的异常
+     */
+    @ExceptionHandler
+    public JsonResult<Void> handleAccessDeniedException(AccessDeniedException e) {
+        log.debug("捕获到:AccessDeniedException");
+        String message = "访问失败，当前登录的用户不具有此操作权限！";
+        return JsonResult.fail(ServiceCode.ERR_FORBIDDEN, message);
+    }
+
+    /**
      * 全局异常处理
      * @param e 全局的异常类
      * @return 返回异常处理反馈的信息
      */
-    @ExceptionHandler
-    public String handlerServiceException(Throwable e){
-        log.debug("这是一个Throwable异常,将统一处理");
-        return e.getMessage();
-    }
+//    @ExceptionHandler
+//    public String handlerServiceException(Throwable e){
+//        log.debug("这是一个Throwable异常,将统一处理");
+//        return e.getMessage();
+//    }
 }

@@ -13,6 +13,7 @@ import io.swagger.annotations.License;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.spring.web.json.Json;
@@ -49,7 +50,7 @@ public class AddressController {
      */
     @ApiOperation("添加收货地址")
     @ApiOperationSupport(order = 100)
-    @PostMapping("insert")
+    @PostMapping("/insert")
     public JsonResult<Void> insert(@Valid AddressAddNewDTO addressAddNewDTO) {
         log.debug("开始处理添加收货地址的业务,参数:{}", addressAddNewDTO);
         addressService.insert(addressAddNewDTO);
