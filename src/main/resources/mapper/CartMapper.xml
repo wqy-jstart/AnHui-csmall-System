@@ -9,6 +9,7 @@
     <select id="selectCartListByUserId" resultMap="QueryResultToCart">
         SELECT ups_user.id uid,
                ups_spu.id  sid,
+               ups_spu.name,
                ups_spu.title,
                ups_spu.index_price,
                ups_spu.brand_name,
@@ -32,11 +33,29 @@
     <resultMap id="QueryResultToCart" type="cn.tedu.anhuicsmall.product.pojo.vo.CartListVO">
         <id column="uid" property="userId"/>
         <id column="sid" property="spuId"/>
+        <result column="name" property="name"/>
         <result column="title" property="title"/>
         <result column="index_price" property="indexPrice"/>
         <result column="brand_name" property="brandName"/>
         <result column="category_name" property="categoryName"/>
         <result column="tags" property="tags"/>
         <result column="url" property="url"/>
+        <result column="sum" property="sumPrice"/>
     </resultMap>
+
+    <!--Integer selectSUMPrice(Long userId);-->
+    <select id="selectSUMPrice" resultType="int">
+        SELECT SUM(ups_spu.index_price)
+        FROM csmall_ups.ups_cart
+                 JOIN csmall_ups.ups_user
+                      ON ups_user.id = ups_cart.user_id
+                 JOIN csmall_ups.ups_spu
+                      ON ups_cart.spu_id = ups_spu.id
+                 JOIN csmall_ups.ups_picture
+                      ON ups_spu.album_id = ups_picture.album_id
+        WHERE ups_picture.is_cover = 1
+          AND ups_spu.is_published = 1
+          AND ups_spu.is_checked = 1
+          AND ups_user.id = #{userId};
+    </select>
 </mapper>

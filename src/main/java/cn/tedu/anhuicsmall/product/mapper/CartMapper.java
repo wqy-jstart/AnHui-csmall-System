@@ -22,4 +22,11 @@ public interface CartMapper extends BaseMapper<Cart> {
      * @return 返回购物车列表
      */
     List<CartListVO> selectCartListByUserId(Long userId);
+
+    /**
+     * 根据用户id查询购物车商品价格总和
+     * @param userId 用户id
+     * @return 返回商品价格总和
+     */
+    Integer selectSUMPrice(Long userId);
 }

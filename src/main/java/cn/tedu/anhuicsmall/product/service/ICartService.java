@@ -19,18 +19,29 @@ public interface ICartService extends IService<Cart> {
 
     /**
      * 添加购物车的功能
+     *
      * @param cartAddNewDTO 添加的购物车信息
      */
     void insert(CartAddNewDTO cartAddNewDTO);
 
     /**
      * 根据id删除购物车的功能
+     *
      * @param cartId 要删除的购物车id
+     * @param userId 用户id
      */
-    void deleteById(Long cartId);
+    void deleteById(Long userId, Long cartId);
+
+    /**
+     * 根据用户id查询购物车商品价格总和
+     * @param userId 用户id
+     * @return 返回商品价格总和
+     */
+    Integer selectSUMPrice(Long userId);
 
     /**
      * 根据用户id查询购物车列表
+     *
      * @param userId 用户id
      * @return 返回购物车列表
      */

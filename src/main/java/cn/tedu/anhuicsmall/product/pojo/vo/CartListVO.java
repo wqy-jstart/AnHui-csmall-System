@@ -22,6 +22,12 @@ public class CartListVO implements Serializable {
      * spuId
      */
     private Long spuId;
+
+    /**
+     * 商品名称
+     */
+    @ApiModelProperty(value ="名称")
+    private String name;
     /**
      * 标题
      */
@@ -69,4 +75,10 @@ public class CartListVO implements Serializable {
      */
     @ApiModelProperty(value = "图片封面")
     private String url;
+
+    /**
+     * 价格总和
+     */
+    @ApiModelProperty(value = "购物车商品价格总和")
+    private Integer sumPrice;
 }

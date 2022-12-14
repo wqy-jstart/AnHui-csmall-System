@@ -7,6 +7,7 @@ import cn.tedu.anhuicsmall.product.web.JsonResult;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
@@ -53,18 +54,37 @@ public class CartController {
     }
 
     /**
+     * 根据用户id查询购物车商品价格总和
+     * @param userId 用户id
+     * @return 返回数据
+     */
+    @ApiOperation("查询购物车商品价格总和")
+    @ApiOperationSupport(order = 150)
+    @GetMapping("/selectSUMPrice")
+    public JsonResult<Integer> selectSUMPrice(@RequestParam(value = "id") Long userId){
+        log.debug("开始处理根据用户id查询购物车商品价格总和,参数:{}",userId);
+        Integer integer = cartService.selectSUMPrice(userId);
+        return JsonResult.ok(integer);
+    }
+
+    /**
      * 根据id删除购物车数据
+     * @param userId 用户id
      * @param cartId 要删除的购物车id
      * @return 返回结果集
      */
     @ApiOperation("根据id删除购物车")
     @ApiOperationSupport(order = 200)
-    @ApiImplicitParam(name = "cartId",value = "购物车id",required = true,dataType = "long")
-    @PostMapping("/{cartId:[0-9]+}/deleteById")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId",value = "用户id",required = true,dataType = "long"),
+            @ApiImplicitParam(name = "cartId",value = "购物车id",required = true,dataType = "long"),
+    })
+    @PostMapping("/{userId:[0-9]+}/{cartId:[0-9]+}/deleteById")
     public JsonResult<Void> deleteById(@Range(min = 1,message = "删除失败,该购物车id无效")
+                                       @PathVariable Long userId,
                                        @PathVariable Long cartId){
-        log.debug("开始处理删除id为{}的购物车数据",cartId);
-        cartService.deleteById(cartId);
+        log.debug("开始处理删除id为{}的用户的购物车id为{}的数据",userId,cartId);
+        cartService.deleteById(userId,cartId);
         return JsonResult.ok();
     }
 

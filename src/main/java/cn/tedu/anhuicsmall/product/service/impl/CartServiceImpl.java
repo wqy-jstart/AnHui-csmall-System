@@ -30,7 +30,7 @@ import java.util.List;
 @Service
 public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements ICartService {
 
-    public CartServiceImpl(){
+    public CartServiceImpl() {
         log.debug("创建业务层接口实现类:CartServiceImpl");
     }
 
@@ -44,58 +44,86 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
 
     /**
      * 处理添加购物车的业务
+     *
      * @param cartAddNewDTO 添加的购物车信息
      */
     @Override
     public void insert(CartAddNewDTO cartAddNewDTO) {
-        log.debug("开始处理添加购物车数据的功能,参数:{}",cartAddNewDTO);
+        log.debug("开始处理添加购物车数据的功能,参数:{}", cartAddNewDTO);
         // 判断用户名是否存在
         User queryUser = userMapper.selectById(cartAddNewDTO.getUserId());
-        if (queryUser == null){
+        if (queryUser == null) {
             String message = "添加失败,该用户数据不存在!";
             log.debug(message);
-            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
+        }
+
+        QueryWrapper<Cart> wrapper = new QueryWrapper<>();
+        wrapper.eq("user_id", cartAddNewDTO.getUserId());
+        wrapper.eq("spu_id", cartAddNewDTO.getSpuId());
+        Cart cart1 = cartMapper.selectOne(wrapper);
+        if (cart1 != null) {
+            String message = "该宝贝已经在购物车中啦~";
+            log.debug(message);
+            throw new ServiceException(ServiceCode.ERROR_CONFLICT, message);
         }
 
         Cart cart = new Cart();
-        BeanUtils.copyProperties(cartAddNewDTO,cart);
+        BeanUtils.copyProperties(cartAddNewDTO, cart);
         int rows = cartMapper.insert(cart);
-        if (rows >1){
+        if (rows > 1) {
             String message = "添加失败,服务器忙,请稍后再试!";
             log.debug(message);
-            throw new ServiceException(ServiceCode.ERR_INSERT,message);
+            throw new ServiceException(ServiceCode.ERR_INSERT, message);
         }
     }
 
     /**
      * 根据id删除购物车数据
-     * @param cartId 要删除的购物车id
+     *
+     * @param spuId  要删除的购物车id
+     * @param userId 用户id
      */
     @Override
-    public void deleteById(Long cartId) {
-        log.debug("开始处理查询id为{}的购物车业务",cartId);
-        Cart queryCart = cartMapper.selectById(cartId);
-        if (queryCart == null){
+    public void deleteById(Long userId, Long spuId) {
+        log.debug("开始处理查询id为{}的购物车业务", spuId);
+        QueryWrapper<Cart> wrapper = new QueryWrapper<>();
+        wrapper.eq("user_id",userId);
+        wrapper.eq("spu_id", spuId);
+        Cart queryCart = cartMapper.selectOne(wrapper);
+        if (queryCart == null) {
             String message = "删除失败,该购物车数据不存在!";
             log.debug(message);
-            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
         }
-        int rows = cartMapper.deleteById(cartId);
-        if (rows>1){
+        int rows = cartMapper.delete(wrapper);
+        if (rows > 1) {
             String message = "删除失败,服务器忙,请稍后再试!";
             log.debug(message);
-            throw new ServiceException(ServiceCode.ERR_DELETE,message);
+            throw new ServiceException(ServiceCode.ERR_DELETE, message);
         }
     }
 
     /**
+     * 根据用户id查询购物车商品价格总和
+     * @param userId 用户id
+     * @return 返回价格总和
+     */
+    @Override
+    public Integer selectSUMPrice(Long userId) {
+        log.debug("根据用户id查询购物车商品价格总和,参数:{}",userId);
+        return cartMapper.selectSUMPrice(userId);
+    }
+
+    /**
      * 返回购物车信息
+     *
      * @param userId 用户id
      * @return 返回集合
      */
     @Override
     public List<CartListVO> selectCartListByUserId(Long userId) {
-        log.debug("开始处理根据用户查询购物车信息的功能,参数:{}",userId);
+        log.debug("开始处理根据用户查询购物车信息的功能,参数:{}", userId);
         return cartMapper.selectCartListByUserId(userId);
     }
 }
