@@ -74,6 +74,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 "users/register",
                 "/users/login",
                 "/users/selectByUsername",
+                "pay/alipay",
         };
 
         // ★客户端请求时携带了请求头,称为复杂请求OPTIONS,该请求会经过预检机制(PreFlight),解决方案目前有两种

@@ -33,6 +33,13 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <!--   支付宝支付的依赖     -->
+        <dependency>
+            <groupId>com.alipay.sdk</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <version>4.16.2.ALL</version>
+        </dependency>
+
         <!-- Spring Boot Validation的依赖项,用于检查请求参数的基本格式 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
