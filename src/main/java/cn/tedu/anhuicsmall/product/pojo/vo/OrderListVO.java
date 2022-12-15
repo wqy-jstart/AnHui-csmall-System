@@ -1,10 +1,12 @@
 package cn.tedu.anhuicsmall.product.pojo.vo;
 
+import cn.tedu.anhuicsmall.product.pojo.entity.Attribute;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 返回订单列表的VO类
@@ -104,6 +106,11 @@ public class OrderListVO implements Serializable {
      * 是否退货
      */
     @ApiModelProperty(value = "是否退货")
-    private Integer back;
+    private Integer isBack;
+
+    /**
+     * 属性集合
+     */
+    private List<Attribute> attributeList;
 
 }

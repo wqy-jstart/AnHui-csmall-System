@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.tedu.anhuicsmall.product.mapper.OrderMapper">
+
+    <!--查询已发货的订单列表-->
+    <!--List<OrderListVO> selectOrderListToDistribute();-->
+    <select id="selectOrderListToDistribute" resultMap="QueryOrderListToDistribute">
+        SELECT ups_user.id        uid,
+               ups_spu.id         sid,
+               ups_spu.name       sname,
+               ups_picture.url,
+               ups_address.name   aname,
+               ups_logistics.name lname,
+               ups_order.number,
+               ups_order.out_trade_no,
+               ups_order.total_amount,
+               ups_order.trade_no,
+               ups_order.time,
+               ups_order.is_pay,
+               ups_order.is_distribute,
+               ups_order.is_take,
+               ups_order.is_comment,
+               ups_order.is_back,
+               ups_attribute.value_list,
+               ups_attribute.unit
+        FROM csmall_ups.ups_spu
+                 JOIN csmall_ups.ups_album
+                      ON ups_album.id = ups_spu.album_id
+                 JOIN csmall_ups.ups_picture
+                      ON ups_picture.album_id = ups_album.id
+                 JOIN csmall_ups.ups_attribute
+                      ON ups_spu.attribute_template_id = ups_attribute.template_id
+                 JOIN csmall_ups.ups_order
+                      ON ups_spu.id = ups_order.spu_id
+                 JOIN csmall_ups.ups_address
+                      ON ups_address.id = ups_order.address_id
+                 JOIN csmall_ups.ups_user
+                      ON ups_order.user_id = ups_user.id
+                 JOIN csmall_ups.ups_spu_logistics
+                      ON ups_spu_logistics.spu_id = ups_spu.id
+                 JOIN csmall_ups.ups_logistics
+                      ON ups_spu_logistics.logistics_id = ups_logistics.id
+        WHERE ups_picture.is_cover = 1
+          AND ups_spu.is_published = 1
+          AND ups_spu.is_checked = 1
+          AND ups_order.is_distribute = 1;
+    </select>
+
+    <resultMap id="QueryOrderListToDistribute" type="cn.tedu.anhuicsmall.product.pojo.vo.OrderListVO">
+        <id column="uid" property="userId"/>
+        <id column="sid" property="spuId"/>
+        <result column="sname" property="spuName"/>
+        <result column="url" property="url"/>
+        <result column="aname" property="addressName"/>
+        <result column="lname" property="logisticsName"/>
+        <result column="number" property="number"/>
+        <result column="out_trade_no" property="outTradeNo"/>
+        <result column="total_amount" property="totalAmount"/>
+        <result column="trade_no" property="tradeNo"/>
+        <result column="time" property="time"/>
+        <result column="is_pay" property="isPay"/>
+        <result column="is_distribute" property="isDistribute"/>
+        <result column="is_take" property="isTake"/>
+        <result column="is_comment" property="isComment"/>
+        <result column="is_back" property="isBack"/>
+        <collection property="attributeList" ofType="cn.tedu.anhuicsmall.product.pojo.entity.Attribute">
+            <result column="value_List" property="valueList"/>
+            <result column="unit" property="unit"/>
+        </collection>
+    </resultMap>
+
+    <!--查询未发货的订单列表-->
+    <!--List<OrderListVO> selectOrderListToNotDistribute();-->
+    <select id="selectOrderListToNotDistribute" resultMap="QueryOrderListToNotDistribute">
+        SELECT ups_user.id      uid,
+               ups_spu.id       sid,
+               ups_spu.name     sname,
+               ups_picture.url,
+               ups_address.name aname,
+               ups_order.number,
+               ups_order.out_trade_no,
+               ups_order.total_amount,
+               ups_order.trade_no,
+               ups_order.time,
+               ups_order.is_pay,
+               ups_order.is_distribute,
+               ups_order.is_take,
+               ups_order.is_comment,
+               ups_order.is_back,
+               ups_attribute.value_list,
+               ups_attribute.unit
+        FROM csmall_ups.ups_spu
+                 JOIN csmall_ups.ups_album
+                      ON ups_album.id = ups_spu.album_id
+                 JOIN csmall_ups.ups_picture
+                      ON ups_picture.album_id = ups_album.id
+                 JOIN csmall_ups.ups_attribute
+                      ON ups_spu.attribute_template_id = ups_attribute.template_id
+                 JOIN csmall_ups.ups_order
+                      ON ups_spu.id = ups_order.spu_id
+                 JOIN csmall_ups.ups_address
+                      ON ups_address.id = ups_order.address_id
+                 JOIN csmall_ups.ups_user
+                      ON ups_order.user_id = ups_user.id
+        WHERE ups_picture.is_cover = 1
+          AND ups_spu.is_published = 1
+          AND ups_spu.is_checked = 1
+          AND ups_order.is_distribute = 0;
+    </select>
+
+    <resultMap id="QueryOrderListToNotDistribute" type="cn.tedu.anhuicsmall.product.pojo.vo.OrderListVO">
+        <id column="uid" property="userId"/>
+        <id column="sid" property="spuId"/>
+        <result column="sname" property="spuName"/>
+        <result column="url" property="url"/>
+        <result column="aname" property="addressName"/>
+        <result column="number" property="number"/>
+        <result column="out_trade_no" property="outTradeNo"/>
+        <result column="total_amount" property="totalAmount"/>
+        <result column="trade_no" property="tradeNo"/>
+        <result column="time" property="time"/>
+        <result column="is_pay" property="isPay"/>
+        <result column="is_distribute" property="isDistribute"/>
+        <result column="is_take" property="isTake"/>
+        <result column="is_comment" property="isComment"/>
+        <result column="is_back" property="isBack"/>
+        <collection property="attributeList" ofType="cn.tedu.anhuicsmall.product.pojo.entity.Attribute">
+            <result column="value_List" property="valueList"/>
+            <result column="unit" property="unit"/>
+        </collection>
+    </resultMap>
+</mapper>

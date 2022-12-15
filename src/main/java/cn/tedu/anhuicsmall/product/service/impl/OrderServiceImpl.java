@@ -10,6 +10,7 @@ import cn.tedu.anhuicsmall.product.pojo.entity.Address;
 import cn.tedu.anhuicsmall.product.pojo.entity.Order;
 import cn.tedu.anhuicsmall.product.pojo.entity.Spu;
 import cn.tedu.anhuicsmall.product.pojo.entity.User;
+import cn.tedu.anhuicsmall.product.pojo.vo.OrderListVO;
 import cn.tedu.anhuicsmall.product.service.IOrderService;
 import cn.tedu.anhuicsmall.product.web.ServiceCode;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 订单的业务层接口实现类
@@ -88,5 +90,25 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             log.debug(message);
             throw new ServiceException(ServiceCode.ERR_INSERT,message);
         }
+    }
+
+    /**
+     * 处理查询未发货订单列表的功能
+     * @return 返回列表
+     */
+    @Override
+    public List<OrderListVO> selectOrderListToNotDistribute() {
+        log.debug("开始处理查询未发货订单列表的功能,无参!");
+        return orderMapper.selectOrderListToNotDistribute();
+    }
+
+    /**
+     * 处理查询已发货订单列表的功能
+     * @return 返回列表
+     */
+    @Override
+    public List<OrderListVO> selectOrderListToDistribute() {
+        log.debug("开始处理查询已发货订单列表的功能,无参!");
+        return orderMapper.selectOrderListToDistribute();
     }
 }
