@@ -73,6 +73,7 @@
     <!--ProductDetailVO selectDetailById(Long spuId);-->
     <select id="selectDetailById" resultMap="QueryDetailResult">
         SELECT ups_spu.id ,
+               ups_spu.name,
                ups_spu.title,
                ups_spu.brand_name,
                ups_spu.category_name,
@@ -102,6 +103,7 @@
     </select>
     <resultMap id="QueryDetailResult" type="cn.tedu.anhuicsmall.product.pojo.vo.ProductDetailVO">
         <id column="id" property="spuId"/>
+        <result column="name" property="name"/>
         <result column="title" property="title"/>
         <result column="brand_name" property="brandName"/>
         <result column="category_name" property="categoryName"/>

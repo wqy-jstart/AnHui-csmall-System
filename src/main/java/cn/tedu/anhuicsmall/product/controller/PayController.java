@@ -3,20 +3,23 @@ package cn.tedu.anhuicsmall.product.controller;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
+import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradePagePayRequest;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * 支付宝的支付控制类
@@ -49,7 +52,7 @@ public class PayController {
     // 支付宝一步通知路径，公网地址
     private static final String NOTIFY_URL = "";
     // 支付宝同步通知路径，也就是当付款完毕后跳转本项目的页面，可私网地址
-    private static final String RETURN_URL = "";
+    private static final String RETURN_URL = "http://localhost:9902/product/paySuccess";
 
     /**
      * 处理请求支付的方法
@@ -61,7 +64,7 @@ public class PayController {
      * @return 返回请求成功后的商品信息
      * @throws AlipayApiException 支付API的内置异常处理
      */
-    @RequestMapping("/alipay")
+    @GetMapping("/alipay")
     public String alipay(HttpSession session, Model model, @RequestParam(value = "dona_money") float donaMoney,
                          @RequestParam(value = "dona_id") int donaId,
                          @RequestParam(value = "dona_name") String subject) throws AlipayApiException {
@@ -93,8 +96,8 @@ public class PayController {
 
         // 设置请求参数
         AlipayTradePagePayRequest alipayRequest = new AlipayTradePagePayRequest();
-        alipayRequest.setReturnUrl(RETURN_URL); // 支付宝异步回调的公网地址
         alipayRequest.setNotifyUrl(NOTIFY_URL); // 支付宝通知的本地地址
+        alipayRequest.setReturnUrl(RETURN_URL); // 支付宝异步回调的公网地址
 
         // 商品描述
         String body = "";
@@ -108,6 +111,57 @@ public class PayController {
         String result =  alipayClient.pageExecute(alipayRequest).getBody();
         System.out.println("商品信息结果："+result);
         return result;
+    }
+
+    @RequestMapping("/returnUrl")
+    public String returnUrlMethod(HttpServletRequest request,HttpSession session,Model model) throws UnsupportedEncodingException, AlipayApiException {
+        log.debug("执行同步回调...");
+        // 获取支付宝GET请求过来的反馈信息
+        Map<String,String> params = new HashMap<>();
+        Map<String,String[]> requestParams = request.getParameterMap(); // 获取get参数列表
+        for (String name : requestParams.keySet()) {
+            String[] values = requestParams.get(name);
+            String valueStr = "";
+            for (int i = 0; i < values.length; i++) {
+                valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
+            }
+            // 解决乱码
+            valueStr = new String(valueStr.getBytes("ISO_8859_1"), "utf-8");
+            params.put(name, valueStr);
+        }
+
+        log.debug("支付宝传递过来的参数：{}",params);
+        // 验证签名(支付宝公钥)
+        boolean signVerified = AlipaySignature.rsaCheckV1(params, ALIPAY_PUBLIC_KEY, CHARSET, SIGN_TYPE);
+        //验证签名通过
+        if(signVerified){
+            // 商户订单号
+            String out_trade_no = new String(request.getParameter("out_trade_no").getBytes("ISO_8859_1"), "UTF-8");
+
+            // 支付宝交易流水号
+            String trade_no = new String(request.getParameter("trade_no").getBytes("ISO_8859_1"), "UTF-8");
+
+            // 付款金额
+            float money = Float.parseFloat(new String(request.getParameter("total_amount").getBytes("ISO_8859_1"), "UTF-8"));
+
+            System.out.println("商户订单号="+out_trade_no);
+            System.out.println("支付宝交易号="+trade_no);
+            System.out.println("付款金额="+money);
+
+            //在这里编写自己的业务代码（对数据库的操作）
+			/*
+			################################
+			*/
+            //跳转到提示页面（成功或者失败的提示页面）
+            model.addAttribute("flag",1);
+            model.addAttribute("msg","支持");
+            return "common/payTips";
+        }else{
+            //跳转到提示页面（成功或者失败的提示页面）
+            model.addAttribute("flag",0);
+            model.addAttribute("msg","支持");
+            return "common/payTips";
+        }
     }
 
 }

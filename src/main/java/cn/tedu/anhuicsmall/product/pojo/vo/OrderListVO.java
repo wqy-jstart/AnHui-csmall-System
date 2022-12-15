@@ -1,6 +1,5 @@
-package cn.tedu.anhuicsmall.product.pojo.entity;
+package cn.tedu.anhuicsmall.product.pojo.vo;
 
-import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -8,61 +7,61 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 订单信息
- *
- * @Author java@Wqy
- * @Version 0.0.1
+ * 返回订单列表的VO类
  */
 @Data
-@TableName("ups_order")
-public class Order implements Serializable {
-
-    /**
-     * 订单id(UUID)
-     */
-    @TableId(type = IdType.AUTO)
-    private Long id;
+public class OrderListVO implements Serializable {
 
     /**
      * 用户id
      */
-    @ApiModelProperty(value = "用户id",required = true)
     private Long userId;
 
     /**
-     * SPU商品详情id
+     * spuId
      */
-    @ApiModelProperty(value = "SPU商品详情id",required = true)
     private Long spuId;
 
     /**
-     * 收货地址id
+     * 收货地址名称
      */
-    @ApiModelProperty(value = "收货地址id",required = true)
-    private Long addressId;
+    @ApiModelProperty(value = "收货地址名称")
+    private String addressName;
 
     /**
-     * 物流id
+     * 商品名称
      */
-    @ApiModelProperty(value = "物流id",required = true)
-    private Long logisticsId;
+    @ApiModelProperty(value = "商品名称")
+    private String spuName;
 
     /**
-     * 购买数量
+     * 商品封面
      */
-    @ApiModelProperty(value = "购买数量",required = true)
+    @ApiModelProperty(value = "商品封面")
+    private String url;
+
+    /**
+     * 物流名称
+     */
+    @ApiModelProperty(value = "物流名称")
+    private String logisticsName;
+
+    /**
+     * 数量
+     */
+    @ApiModelProperty(value = "数量")
     private Integer number;
 
     /**
      * 订单号
      */
-    @ApiModelProperty(value = "订单号",required = true)
+    @ApiModelProperty(value = "订单号")
     private String outTradeNo;
 
     /**
      * 交易金额
      */
-    @ApiModelProperty(value = "交易金额",required = true)
+    @ApiModelProperty(value = "交易金额")
     private Double totalAmount;
 
     /**
@@ -107,15 +106,4 @@ public class Order implements Serializable {
     @ApiModelProperty(value = "是否退货")
     private Integer back;
 
-    /**
-     * 数据创建时间
-     */
-    @TableField(fill = FieldFill.INSERT)
-    private Date gmtCreate;
-
-    /**
-     * 数据修改时间
-     */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Date gmtModified;
 }

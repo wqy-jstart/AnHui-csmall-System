@@ -26,6 +26,12 @@ public class ProductDetailVO implements Serializable {
     private Long spuId;
 
     /**
+     * 商品名称
+     */
+    @ApiModelProperty(value = "商品名称")
+    private String name;
+
+    /**
      * 标题
      */
     @ApiModelProperty(value = "标题")

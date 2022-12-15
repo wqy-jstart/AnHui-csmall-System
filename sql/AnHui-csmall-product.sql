@@ -571,6 +571,10 @@ CREATE TABLE ups_order
     address_id    bigint(20) unsigned DEFAULT NULL COMMENT '收货地址id',
     logistics_id  bigint(20) unsigned DEFAULT NULL COMMENT '物流id',
     number        int(11) unsigned    DEFAULT '0' COMMENT '数量',
+    out_trade_no  varchar(50) NOT NULL COMMENT '订单号',
+    total_amount  decimal(10, 2)      DEFAULT NULL COMMENT '交易金额',
+    trade_no      varchar(50) NOT NULL COMMENT '交易流水号',
+    time          datetime    NOT NULL COMMENT '付款时间',
     is_pay        tinyint(3) unsigned DEFAULT '0' COMMENT '是否付款，1=已付款，0=未付款',
     is_distribute tinyint(3) unsigned DEFAULT '0' COMMENT '是否发货，1=已发货，0=未发货',
     is_take       tinyint(3) unsigned DEFAULT '0' COMMENT '是否收货，1=已收货，0=未收货',
@@ -586,7 +590,7 @@ DROP TABLE IF EXISTS ups_logistics;
 CREATE TABLE ups_logistics
 (
     id           bigint(20) unsigned DEFAULT NULL AUTO_INCREMENT COMMENT '数据id',
-    name         varchar(50)         DEFAULT NULL COMMENT '物流名称',
+    name         varchar(50)         DEFAULT '暂未发货' COMMENT '物流名称',
     note         varchar(255)        DEFAULT NULL COMMENT '物流备注',
     gmt_create   datetime            DEFAULT NULL COMMENT '数据创建时间',
     gmt_modified datetime            DEFAULT NULL COMMENT '数据最后修改时间',
