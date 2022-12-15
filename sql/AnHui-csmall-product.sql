@@ -585,6 +585,24 @@ CREATE TABLE ups_order
     PRIMARY KEY (id)
 ) DEFAULT CHARSET = utf8mb4 COMMENT ='订单信息';
 
+# spu和物流关联表
+DROP TABLE IF EXISTS ups_spu_logistics;
+CREATE TABLE ups_spu_logistics
+(
+    id           bigint(20) unsigned DEFAULT NULL AUTO_INCREMENT COMMENT '数据id',
+    spu_id       bigint(20) unsigned DEFAULT NULL COMMENT '商品SPU详情id',
+    logistics_id bigint(20) unsigned DEFAULT NULL COMMENT '物流id',
+    gmt_create   datetime            DEFAULT NULL COMMENT '数据创建时间',
+    gmt_modified datetime            DEFAULT NULL COMMENT '数据最后修改时间',
+    PRIMARY KEY (id)
+) DEFAULT CHARSET = utf8mb4 COMMENT ='Spu与物流关联表';
+INSERT INTO ups_spu_logistics(spu_id, logistics_id, gmt_create, gmt_modified)
+VALUES (1, 1, '2022-12-10 14:34:21', '2022-12-10 14:34:21'),
+       (2, 2, '2022-12-10 14:34:21', '2022-12-10 14:34:21'),
+       (3, 3, '2022-12-10 14:34:21', '2022-12-10 14:34:21'),
+       (4, 4, '2022-12-10 14:34:21', '2022-12-10 14:34:21'),
+       (5, 5, '2022-12-10 14:34:21', '2022-12-10 14:34:21');
+
 # 物流配送表
 DROP TABLE IF EXISTS ups_logistics;
 CREATE TABLE ups_logistics

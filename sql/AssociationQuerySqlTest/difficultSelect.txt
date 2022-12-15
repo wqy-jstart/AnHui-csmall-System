@@ -1,0 +1,147 @@
+SELECT ups_spu.id,
+       ups_spu.title,
+       ups_spu.list_price,
+       ups_spu.views,
+       ups_spu.sales,
+       ups_picture.url,
+       ups_category.id,
+       ups_category.parent_id
+FROM ups_spu
+         JOIN ups_category
+              ON ups_spu.category_id = ups_category.id
+         JOIN ups_album
+              ON ups_spu.album_id = ups_album.id
+         JOIN ups_picture
+              ON ups_picture.album_id = ups_album.id
+WHERE ups_picture.is_cover = 1
+  AND ups_category.parent_id = 3
+  AND ups_spu.is_published = 1;
+
+SELECT ups_spu.id,
+       ups_spu.title,
+       ups_spu.brand_name,
+       ups_spu.category_name,
+       ups_spu.list_price,
+       ups_spu.index_price,
+       ups_spu.sales,
+       ups_spu.views,
+       ups_picture.url,
+       ups_spu.is_recommend,
+       ups_spu.detail,
+       ups_spu.stock,
+       ups_spu.gmt_create
+FROM ups_spu
+         JOIN ups_brand
+              ON ups_spu.brand_id = ups_brand.id
+         JOIN ups_category
+              ON ups_spu.category_id = ups_category.id
+         JOIN ups_album
+              ON ups_spu.album_id = ups_album.id
+         JOIN ups_picture
+              ON ups_picture.album_id = ups_album.id
+WHERE ups_picture.is_cover = 1
+  AND ups_spu.is_checked = 1
+  AND ups_spu.is_published = 1
+  AND ups_spu.id = 5;
+
+SELECT ups_attribute.value_list, ups_attribute.unit
+FROM ups_spu
+         JOIN ups_picture
+              ON ups_spu.album_id = ups_picture.album_id
+         JOIN ups_attribute
+              ON ups_spu.attribute_template_id = ups_attribute.template_id
+WHERE ups_picture.is_cover = 1
+  AND ups_spu.is_published = 1
+  AND ups_spu.is_checked = 1
+  AND ups_spu.id = 5;
+
+SELECT ups_picture.url
+FROM ups_spu
+         JOIN ups_picture
+              ON ups_spu.album_id = ups_picture.album_id
+WHERE ups_picture.is_cover = 0
+  AND ups_spu.is_published = 1
+  AND ups_spu.is_checked = 1
+  AND ups_spu.id = 5;
+
+SELECT ups_user.id,
+       ups_spu.id,
+       ups_spu.title,
+       ups_spu.index_price,
+       ups_spu.brand_name,
+       ups_spu.category_name,
+       ups_spu.tags,
+       ups_spu.detail,
+       ups_picture.url
+FROM ups_cart
+         JOIN ups_user
+              ON ups_user.id = ups_cart.user_id
+         JOIN ups_spu
+              ON ups_cart.spu_id = ups_spu.id
+         JOIN ups_picture
+              ON ups_spu.album_id = ups_picture.album_id
+WHERE ups_picture.is_cover = 1
+  AND ups_spu.is_published = 1
+  AND ups_spu.is_checked = 1
+  AND ups_user.id = 1;
+
+SELECT ups_attribute.value_list, ups_attribute.unit
+FROM ups_cart
+         JOIN ups_user
+              ON ups_user.id = ups_cart.user_id
+         JOIN ups_spu
+              ON ups_cart.spu_id = ups_spu.id
+         JOIN ups_attribute
+              ON ups_spu.attribute_template_id = ups_attribute.template_id
+WHERE ups_spu.is_published = 1
+  AND ups_spu.is_checked = 1
+  AND ups_spu.id = 2;
+
+SELECT COUNT(*)
+FROM ups_cart
+         JOIN ups_user
+              ON ups_user.id = ups_cart.user_id
+         JOIN ups_spu
+              ON ups_cart.spu_id = ups_spu.id
+WHERE ups_spu.is_published = 1
+  AND ups_spu.is_checked = 1
+  AND ups_user.id = 1;
+
+SELECT SUM(ups_spu.index_price)
+FROM csmall_ups.ups_cart
+         JOIN csmall_ups.ups_user
+              ON ups_user.id = ups_cart.user_id
+         JOIN csmall_ups.ups_spu
+              ON ups_cart.spu_id = ups_spu.id
+         JOIN csmall_ups.ups_picture
+              ON ups_spu.album_id = ups_picture.album_id
+WHERE ups_picture.is_cover = 1
+  AND ups_spu.is_published = 1
+  AND ups_spu.is_checked = 1
+  AND ups_user.id = 1;
+
+SELECT ups_user.id,ups_spu.id,ups_spu.name,ups_picture.url,ups_address.name,ups_logistics.name,
+       ups_order.number,ups_order.out_trade_no,ups_order.total_amount,ups_order.trade_no,ups_order.time,
+       ups_order.is_pay,ups_order.is_distribute,ups_order.is_take,ups_order.is_comment,ups_order.is_back,
+       ups_attribute.value_list, ups_attribute.unit
+FROM ups_spu
+         JOIN ups_album
+              ON ups_album.id = ups_spu.album_id
+         JOIN ups_picture
+              ON ups_picture.album_id = ups_album.id
+         JOIN ups_attribute
+              ON ups_spu.attribute_template_id = ups_attribute.template_id
+         JOIN ups_order
+              ON ups_spu.id = ups_order.spu_id
+         JOIN ups_address
+              ON ups_address.id = ups_order.address_id
+         JOIN ups_user
+              ON ups_order.user_id = ups_user.id
+         JOIN ups_spu_logistics
+              ON ups_spu_logistics.spu_id = ups_spu.id
+         JOIN ups_logistics
+              ON ups_spu_logistics.logistics_id = ups_logistics.id
+WHERE ups_picture.is_cover = 1
+  AND ups_spu.is_published = 1
+  AND ups_spu.is_checked = 1
+  AND ups_order.is_distribute = 0;
