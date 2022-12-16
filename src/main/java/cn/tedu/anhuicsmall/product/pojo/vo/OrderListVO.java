@@ -27,7 +27,7 @@ public class OrderListVO implements Serializable {
     /**
      * 收货地址名称
      */
-    @ApiModelProperty(value = "收货地址名称")
+    @ApiModelProperty(value = "收货人姓名")
     private String addressName;
 
     /**

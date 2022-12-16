@@ -126,4 +126,15 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
         log.debug("开始处理根据用户查询购物车信息的功能,参数:{}", userId);
         return cartMapper.selectCartListByUserId(userId);
     }
+
+    /**
+     * 根据用户id查询购物车数量
+     * @param userId 用户id
+     * @return 返回数量
+     */
+    @Override
+    public Integer selectCount(Long userId) {
+        log.debug("开始处理根据用户id查询购物车数量,参数:{}",userId);
+        return cartMapper.selectCount(userId);
+    }
 }

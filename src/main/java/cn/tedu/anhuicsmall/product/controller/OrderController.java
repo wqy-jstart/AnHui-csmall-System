@@ -55,12 +55,74 @@ public class OrderController {
     }
 
     /**
+     * 根据用户id查询未发货的订单数量
+     * @param userId 用户id
+     * @return 返回结果集
+     */
+    @ApiOperation("根据用户id查询未发货的订单数量")
+    @ApiImplicitParam(name = "userId",value = "用户id",required = true,dataType = "long")
+    @GetMapping("/{userId:[0-9]+}/selectCountToNotDib")
+    public JsonResult<Integer> selectCountToNotDib(@Range(min = 1,message = "查询失败,该购物车id无效")
+                                                       @PathVariable Long userId){
+        log.debug("开始处理查询用户id为{}的未发货订单数量",userId);
+        Integer count = orderService.selectCountToNoDib(userId);
+        return JsonResult.ok(count);
+    }
+
+    /**
+     * 根据用户id查询已发货的订单数量
+     * @param userId 用户id
+     * @return 返回结果集
+     */
+    @ApiOperation("根据用户id查询已发货的订单数量")
+    @ApiImplicitParam(name = "userId",value = "用户id",required = true,dataType = "long")
+    @GetMapping("/{userId:[0-9]+}/selectCountToDib")
+    public JsonResult<Integer> selectCountToDib(@Range(min = 1,message = "查询失败,该购物车id无效")
+                                                   @PathVariable Long userId){
+        log.debug("开始处理查询用户id为{}的已发货订单数量",userId);
+        Integer count = orderService.selectCountToDib(userId);
+        return JsonResult.ok(count);
+    }
+
+    /**
+     * 根据用户id查询未发货的订单列表
+     * @param userId 用户id
+     * @return 返回列表
+     */
+    @ApiOperation("根据用户id查询未发货的订单列表")
+    @ApiOperationSupport(order = 500)
+    @ApiImplicitParam(name = "userId",value = "用户id",required = true,dataType = "long")
+    @GetMapping("/{userId:[0-9]+}/selectByUserIdToNoDib")
+        public JsonResult<List<OrderListVO>> selectByUserIdToNoDib(@Range(min = 1, message = "查询失败,该用户id无效!")
+                                                                       @PathVariable Long userId){
+        log.debug("开始处理查询用户id为{}的未发货订单列表",userId);
+        List<OrderListVO> orderListVOS = orderService.selectByUserIdToNotDistribute(userId);
+        return JsonResult.ok(orderListVOS);
+    }
+
+    /**
+     * 根据用户id查询已发货的订单列表
+     * @param userId 用户id
+     * @return 返回列表
+     */
+    @ApiOperation("根据用户id查询已发货的订单列表")
+    @ApiOperationSupport(order = 501)
+    @ApiImplicitParam(name = "userId",value = "用户id",required = true,dataType = "long")
+    @GetMapping("/{userId:[0-9]+}/selectByUserIdToDib")
+    public JsonResult<List<OrderListVO>> selectByUserIdToDib(@Range(min = 1, message = "查询失败,该用户id无效!")
+                                                               @PathVariable Long userId){
+        log.debug("开始处理查询用户id为{}的已发货订单列表",userId);
+        List<OrderListVO> orderListVOS = orderService.selectByUserIdToDistribute(userId);
+        return JsonResult.ok(orderListVOS);
+    }
+
+    /**
      * 处理查询未发货的订单列表信息
      *
      * @return 返回未发货的订单列表
      */
     @ApiOperation("查询未发货的订单列表信息")
-    @ApiOperationSupport(order = 500)
+    @ApiOperationSupport(order = 502)
     @GetMapping("/selectToNotDistribute")
     public JsonResult<List<OrderListVO>> selectToNotDistribute() {
         log.debug("开始处理查询已发货的订单列表信息,无参!");
@@ -74,7 +136,7 @@ public class OrderController {
      * @return 返回未发货的订单实体类
      */
     @ApiOperation("根据用户id和spuId查询订单信息")
-    @ApiOperationSupport(order = 501)
+    @ApiOperationSupport(order = 503)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId",value = "用户id",required = true,dataType = "long"),
             @ApiImplicitParam(name = "spuId",value = "spuId",required = true,dataType = "long")
@@ -94,7 +156,7 @@ public class OrderController {
      * @return 返回已发货的订单列表
      */
     @ApiOperation("查询已发货的订单列表信息")
-    @ApiOperationSupport(order = 502)
+    @ApiOperationSupport(order = 504)
     @GetMapping("/selectToDistribute")
     public JsonResult<List<OrderListVO>> selectToDistribute() {
         log.debug("开始处理查询已发货的订单列表信息,无参!");

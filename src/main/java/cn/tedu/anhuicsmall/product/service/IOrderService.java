@@ -18,6 +18,34 @@ import java.util.List;
 public interface IOrderService extends IService<Order> {
 
     /**
+     * 根据id查询未发货的数量
+     * @param userId 用户id
+     * @return 返回数量
+     */
+    Integer selectCountToNoDib(Long userId);
+
+    /**
+     * 根据id查询已发货的数量
+     * @param userId 用户id
+     * @return 返回数量
+     */
+    Integer selectCountToDib(Long userId);
+
+    /**
+     * 根据用户id查询未发货的列表
+     * @param userId 用户id
+     * @return 返回列表
+     */
+    List<OrderListVO> selectByUserIdToNotDistribute(Long userId);
+
+    /**
+     * 根据用户id查询已发货的列表
+     * @param userId 用户id
+     * @return 返回列表
+     */
+    List<OrderListVO> selectByUserIdToDistribute(Long userId);
+
+    /**
      * 添加订单的业务
      * @param orderAddNewDTO 添加的订单信息
      */

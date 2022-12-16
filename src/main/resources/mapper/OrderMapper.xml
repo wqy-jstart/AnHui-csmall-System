@@ -4,6 +4,143 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.tedu.anhuicsmall.product.mapper.OrderMapper">
 
+    <!--Integer selectCountToNoDib(Long userId);-->
+    <select id="selectCountToNoDib" resultType="int">
+        SELECT COUNT(*)
+        FROM csmall_ups.ups_spu
+                 JOIN csmall_ups.ups_album
+                      ON ups_album.id = ups_spu.album_id
+                 JOIN csmall_ups.ups_picture
+                      ON ups_picture.album_id = ups_album.id
+                 JOIN csmall_ups.ups_order
+                      ON ups_spu.id = ups_order.spu_id
+                 JOIN csmall_ups.ups_address
+                      ON ups_address.id = ups_order.address_id
+                 JOIN csmall_ups.ups_user
+                      ON ups_order.user_id = ups_user.id
+        WHERE ups_picture.is_cover = 1
+          AND ups_spu.is_published = 1
+          AND ups_spu.is_checked = 1
+          AND ups_order.is_distribute = 0
+          AND ups_user.id = #{userId}
+    </select>
+
+    <!--Integer selectCountToDib(Long userId);-->
+    <select id="selectCountToDib" resultType="int">
+        SELECT COUNT(*)
+        FROM csmall_ups.ups_spu
+                 JOIN csmall_ups.ups_album
+                      ON ups_album.id = ups_spu.album_id
+                 JOIN csmall_ups.ups_picture
+                      ON ups_picture.album_id = ups_album.id
+                 JOIN csmall_ups.ups_order
+                      ON ups_spu.id = ups_order.spu_id
+                 JOIN csmall_ups.ups_address
+                      ON ups_address.id = ups_order.address_id
+                 JOIN csmall_ups.ups_user
+                      ON ups_order.user_id = ups_user.id
+                 JOIN csmall_ups.ups_user_spu_logistics
+                      ON ups_user_spu_logistics.spu_id = ups_spu.id
+                 JOIN csmall_ups.ups_logistics
+                      ON ups_user_spu_logistics.logistics_id = ups_logistics.id
+        WHERE ups_picture.is_cover = 1
+          AND ups_spu.is_published = 1
+          AND ups_spu.is_checked = 1
+          AND ups_order.is_distribute = 1
+          AND ups_user.id = #{userId}
+    </select>
+
+    <!--List<OrderListVO> selectByUserIdToNotDistribute(Long userId);-->
+    <select id="selectByUserIdToNotDistribute" resultMap="QueryOrderListToNotDistribute">
+        SELECT ups_user.id        uid,
+               ups_spu.id         sid,
+               ups_spu.name       sname,
+               ups_picture.url,
+               ups_address.name   aname,
+               ups_address.info,
+               ups_address.detail_info,
+               ups_address.number pnumber,
+               ups_address.tags,
+               ups_order.number,
+               ups_order.out_trade_no,
+               ups_order.total_amount,
+               ups_order.trade_no,
+               ups_order.time,
+               ups_order.is_pay,
+               ups_order.is_distribute,
+               ups_order.is_take,
+               ups_order.is_comment,
+               ups_order.is_back,
+               ups_attribute.value_list,
+               ups_attribute.unit
+        FROM csmall_ups.ups_spu
+                 JOIN csmall_ups.ups_album
+                      ON ups_album.id = ups_spu.album_id
+                 JOIN csmall_ups.ups_picture
+                      ON ups_picture.album_id = ups_album.id
+                 JOIN csmall_ups.ups_attribute
+                      ON ups_spu.attribute_template_id = ups_attribute.template_id
+                 JOIN csmall_ups.ups_order
+                      ON ups_spu.id = ups_order.spu_id
+                 JOIN csmall_ups.ups_address
+                      ON ups_address.id = ups_order.address_id
+                 JOIN csmall_ups.ups_user
+                      ON ups_order.user_id = ups_user.id
+        WHERE ups_picture.is_cover = 1
+          AND ups_spu.is_published = 1
+          AND ups_spu.is_checked = 1
+          AND ups_order.is_distribute = 0
+          AND ups_user.id = #{userId}
+    </select>
+
+    <!--List<OrderListVO> selectByUserIdToDistribute(Long userId);-->
+    <select id="selectByUserIdToDistribute" resultMap="QueryOrderListToDistribute">
+        SELECT ups_user.id        uid,
+               ups_spu.id         sid,
+               ups_spu.name       sname,
+               ups_picture.url,
+               ups_address.name   aname,
+               ups_address.info,
+               ups_address.detail_info,
+               ups_address.number pnumber,
+               ups_address.tags,
+               ups_logistics.name lname,
+               ups_order.number,
+               ups_order.out_trade_no,
+               ups_order.total_amount,
+               ups_order.trade_no,
+               ups_order.time,
+               ups_order.is_pay,
+               ups_order.is_distribute,
+               ups_order.is_take,
+               ups_order.is_comment,
+               ups_order.is_back,
+               ups_attribute.value_list,
+               ups_attribute.unit
+        FROM csmall_ups.ups_spu
+                 JOIN csmall_ups.ups_album
+                      ON ups_album.id = ups_spu.album_id
+                 JOIN csmall_ups.ups_picture
+                      ON ups_picture.album_id = ups_album.id
+                 JOIN csmall_ups.ups_attribute
+                      ON ups_spu.attribute_template_id = ups_attribute.template_id
+                 JOIN csmall_ups.ups_order
+                      ON ups_spu.id = ups_order.spu_id
+                 JOIN csmall_ups.ups_address
+                      ON ups_address.id = ups_order.address_id
+                 JOIN csmall_ups.ups_user
+                      ON ups_order.user_id = ups_user.id
+                 JOIN csmall_ups.ups_user_spu_logistics
+                      ON ups_user_spu_logistics.spu_id = ups_spu.id
+                 JOIN csmall_ups.ups_logistics
+                      ON ups_user_spu_logistics.logistics_id = ups_logistics.id
+        WHERE ups_picture.is_cover = 1
+          AND ups_spu.is_published = 1
+          AND ups_spu.is_checked = 1
+          AND ups_order.is_distribute = 1
+          AND ups_user.id = #{userId}
+    </select>
+
     <!--查询已发货的订单列表-->
     <!--List<OrderListVO> selectOrderListToDistribute();-->
     <select id="selectOrderListToDistribute" resultMap="QueryOrderListToDistribute">

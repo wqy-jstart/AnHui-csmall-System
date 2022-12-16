@@ -103,4 +103,19 @@ public class CartController {
         log.debug("返回的数据:{}",cartListVOS);
         return JsonResult.ok(cartListVOS);
     }
+
+    /**
+     * 根据用户id查询购物车数量
+     * @param userId 用户id
+     * @return 返回购物车数量
+     */
+    @ApiOperation("根据用户id查询购物车数量")
+    @ApiImplicitParam(name = "userId",value = "用户id",required = true,dataType = "long")
+    @GetMapping("/{userId:[0-9]+}/selectCount")
+    public JsonResult<Integer> selectByCount(@Range(min = 1,message = "查询失败,该购物车id无效")
+                                                 @PathVariable Long userId){
+        log.debug("开始处理根据用户id[{}]查询购物车数量的请求",userId);
+        Integer count = cartService.selectCount(userId);
+        return JsonResult.ok(count);
+    }
 }

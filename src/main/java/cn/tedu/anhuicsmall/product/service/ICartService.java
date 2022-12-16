@@ -46,4 +46,11 @@ public interface ICartService extends IService<Cart> {
      * @return 返回购物车列表
      */
     List<CartListVO> selectCartListByUserId(Long userId);
+
+    /**
+     * 根据用户id查询购物车数量
+     * @param userId 用户id
+     * @return 数量
+     */
+    Integer selectCount(Long userId);
 }

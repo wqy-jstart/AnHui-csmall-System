@@ -58,4 +58,20 @@
           AND ups_spu.is_checked = 1
           AND ups_user.id = #{userId};
     </select>
+
+    <!--Integer selectCount(Long userId);-->
+    <select id="selectCount" resultType="int">
+        SELECT COUNT(*)
+        FROM csmall_ups.ups_cart
+                 JOIN csmall_ups.ups_user
+                      ON ups_user.id = ups_cart.user_id
+                 JOIN csmall_ups.ups_spu
+                      ON ups_cart.spu_id = ups_spu.id
+                 JOIN csmall_ups.ups_picture
+                      ON ups_spu.album_id = ups_picture.album_id
+        WHERE ups_picture.is_cover = 1
+          AND ups_spu.is_published = 1
+          AND ups_spu.is_checked = 1
+          AND ups_user.id = #{userId};
+    </select>
 </mapper>

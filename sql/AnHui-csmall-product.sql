@@ -584,24 +584,29 @@ CREATE TABLE ups_order
     gmt_modified  datetime            DEFAULT NULL COMMENT '数据最后修改时间',
     PRIMARY KEY (id)
 ) DEFAULT CHARSET = utf8mb4 COMMENT ='订单信息';
+INSERT INTO ups_order(user_id, spu_id, address_id, logistics_id, number, out_trade_no, total_amount, trade_no, time, is_pay, is_distribute, is_take, is_comment, is_back, gmt_create, gmt_modified)
+VALUES (1,5,1,1,2,'215432432thth',12.00,'4235423445','2022-12-10 14:34:21',1,1,0,0,0,'2022-12-10 14:34:21','2022-12-10 14:34:21'),
+       (1,6,2,2,2,'32145425bght',24.00,'53452353445','2022-12-10 14:34:21',1,0,0,0,0,'2022-12-10 14:34:21','2022-12-10 14:34:21');
 
-# spu和物流关联表
-DROP TABLE IF EXISTS ups_spu_logistics;
-CREATE TABLE ups_spu_logistics
+# 用户和spu和物流关联表
+DROP TABLE IF EXISTS ups_user_spu_logistics;
+CREATE TABLE ups_user_spu_logistics
 (
     id           bigint(20) unsigned DEFAULT NULL AUTO_INCREMENT COMMENT '数据id',
+    user_id       bigint(20) unsigned DEFAULT NULL COMMENT '用户id',
     spu_id       bigint(20) unsigned DEFAULT NULL COMMENT '商品SPU详情id',
     logistics_id bigint(20) unsigned DEFAULT NULL COMMENT '物流id',
+    note         varchar(255)        DEFAULT '无' COMMENT '物流备注',
     gmt_create   datetime            DEFAULT NULL COMMENT '数据创建时间',
     gmt_modified datetime            DEFAULT NULL COMMENT '数据最后修改时间',
     PRIMARY KEY (id)
-) DEFAULT CHARSET = utf8mb4 COMMENT ='Spu与物流关联表';
-INSERT INTO ups_spu_logistics(spu_id, logistics_id, gmt_create, gmt_modified)
-VALUES (1, 1, '2022-12-10 14:34:21', '2022-12-10 14:34:21'),
-       (2, 2, '2022-12-10 14:34:21', '2022-12-10 14:34:21'),
-       (3, 3, '2022-12-10 14:34:21', '2022-12-10 14:34:21'),
-       (4, 4, '2022-12-10 14:34:21', '2022-12-10 14:34:21'),
-       (5, 5, '2022-12-10 14:34:21', '2022-12-10 14:34:21');
+) DEFAULT CHARSET = utf8mb4 COMMENT ='用户和Spu与物流关联表';
+INSERT INTO ups_user_spu_logistics(user_id ,spu_id, logistics_id, gmt_create, gmt_modified)
+VALUES (1,1, 1, '2022-12-10 14:34:21', '2022-12-10 14:34:21'),
+       (1,2, 2, '2022-12-10 14:34:21', '2022-12-10 14:34:21'),
+       (1,3, 3, '2022-12-10 14:34:21', '2022-12-10 14:34:21'),
+       (1,4, 4, '2022-12-10 14:34:21', '2022-12-10 14:34:21'),
+       (1,5, 5, '2022-12-10 14:34:21', '2022-12-10 14:34:21');
 
 # 物流配送表
 DROP TABLE IF EXISTS ups_logistics;

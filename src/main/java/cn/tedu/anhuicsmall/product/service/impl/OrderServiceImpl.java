@@ -32,7 +32,7 @@ import java.util.List;
 @Service
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements IOrderService {
 
-    public OrderServiceImpl(){
+    public OrderServiceImpl() {
         log.debug("创建业务层实现类:OrderServiceImpl");
     }
 
@@ -53,47 +53,107 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private AddressMapper addressMapper;
 
     /**
+     * 根据用户id查询未发货的订单数量
+     * @param userId 用户id
+     * @return 返回数量
+     */
+    @Override
+    public Integer selectCountToNoDib(Long userId) {
+        log.debug("开始处理根据用户id查询未发货的商品数量,参数:{}",userId);
+        return orderMapper.selectCountToNoDib(userId);
+    }
+
+    /**
+     * 根据用户id查询已发货的订单数量
+     * @param userId 用户id
+     * @return 返回数量
+     */
+    @Override
+    public Integer selectCountToDib(Long userId) {
+        log.debug("开始处理根据用户id查询已发货的商品数量,参数:{}",userId);
+        return orderMapper.selectCountToDib(userId);
+    }
+
+    /**
+     * 根据用户id查询未发货列表
+     *
+     * @param userId 用户id
+     * @return 返回未发货列表
+     */
+    @Override
+    public List<OrderListVO> selectByUserIdToNotDistribute(Long userId) {
+        log.debug("开始处理查询用户id为{}的未发货列表", userId);
+        User queryUser = userMapper.selectById(userId);
+        if (queryUser == null) {
+            String message = "查询失败,该用户不存在!";
+            log.debug(message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
+        }
+        return orderMapper.selectByUserIdToNotDistribute(userId);
+    }
+
+    /**
+     * 根据用户id查询已发货列表
+     *
+     * @param userId 用户id
+     * @return 返回已发货列表
+     */
+    @Override
+    public List<OrderListVO> selectByUserIdToDistribute(Long userId) {
+        log.debug("开始处理查询用户id为{}的已发货列表", userId);
+        User queryUser = userMapper.selectById(userId);
+        if (queryUser == null) {
+            String message = "查询失败,该用户不存在!";
+            log.debug(message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
+        }
+        return orderMapper.selectByUserIdToDistribute(userId);
+    }
+
+    /**
      * 添加订单信息的业务
+     *
      * @param orderAddNewDTO 添加的订单信息
      */
     @Override
     public void insert(OrderAddNewDTO orderAddNewDTO) {
-        log.debug("开始处理添加订单信息的业务,参数:{}",orderAddNewDTO);
+        log.debug("开始处理添加订单信息的业务,参数:{}", orderAddNewDTO);
         User queryUser = userMapper.selectById(orderAddNewDTO.getUserId());
-        if (queryUser == null){
+        if (queryUser == null) {
             String message = "添加订单失败,该用户不存在!";
             log.debug(message);
-            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
         }
         Spu querySpu = spuMapper.selectById(orderAddNewDTO.getSpuId());
-        if (querySpu == null){
+        if (querySpu == null) {
             String message = "添加订单失败,该商品不存在!";
             log.debug(message);
-            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
         }
         Address queryAddress = addressMapper.selectById(orderAddNewDTO.getAddressId());
-        if (queryAddress == null){
+        if (queryAddress == null) {
             String message = "添加订单失败,该收货地址不存在!";
             log.debug(message);
-            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
         }
 
         log.debug("即将向数据库中添加订单信息...");
         Order order = new Order();
-        BeanUtils.copyProperties(orderAddNewDTO,order);
+        BeanUtils.copyProperties(orderAddNewDTO, order);
         order.setTime(new Date());
         order.setIsPay(1);
         log.debug("开始向数据库中添加订单信息...");
         int rows = orderMapper.insert(order);
-        if (rows>1){
+        if (rows > 1) {
             String message = "添加订单失败,服务器忙,请稍后再试...";
             log.debug(message);
-            throw new ServiceException(ServiceCode.ERR_INSERT,message);
+            throw new ServiceException(ServiceCode.ERR_INSERT, message);
         }
     }
 
     /**
      * 处理查询未发货订单列表的功能
+     *
      * @return 返回列表
      */
     @Override
@@ -104,31 +164,33 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     /**
      * 根据用户id和SpuId查询订单数据
+     *
      * @param userId 用户id
-     * @param spuId spuId
+     * @param spuId  spuId
      * @return 返回订单信息
      */
     @Override
     public OrderListVO selectById(Long userId, Long spuId) {
-        log.debug("开始处理查询用户[{}]和spu[{}]的订单信息",userId,spuId);
+        log.debug("开始处理查询用户[{}]和spu[{}]的订单信息", userId, spuId);
         User queryUser = userMapper.selectById(userId);
-        if (queryUser == null){
+        if (queryUser == null) {
             String message = "查询失败,该用户不存在";
             log.debug(message);
-            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
         }
         Spu querySpu = spuMapper.selectById(spuId);
-        if (querySpu == null){
+        if (querySpu == null) {
             String message = "查询失败,该Spu不存在";
             log.debug(message);
-            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
         }
 
-        return orderMapper.selectById(userId,spuId);
+        return orderMapper.selectById(userId, spuId);
     }
 
     /**
      * 处理查询已发货订单列表的功能
+     *
      * @return 返回列表
      */
     @Override
