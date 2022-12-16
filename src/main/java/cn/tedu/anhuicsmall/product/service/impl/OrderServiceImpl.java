@@ -103,6 +103,31 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
     /**
+     * 根据用户id和SpuId查询订单数据
+     * @param userId 用户id
+     * @param spuId spuId
+     * @return 返回订单信息
+     */
+    @Override
+    public OrderListVO selectById(Long userId, Long spuId) {
+        log.debug("开始处理查询用户[{}]和spu[{}]的订单信息",userId,spuId);
+        User queryUser = userMapper.selectById(userId);
+        if (queryUser == null){
+            String message = "查询失败,该用户不存在";
+            log.debug(message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,message);
+        }
+        Spu querySpu = spuMapper.selectById(spuId);
+        if (querySpu == null){
+            String message = "查询失败,该Spu不存在";
+            log.debug(message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND,message);
+        }
+
+        return orderMapper.selectById(userId,spuId);
+    }
+
+    /**
      * 处理查询已发货订单列表的功能
      * @return 返回列表
      */

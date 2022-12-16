@@ -23,6 +23,14 @@ public interface OrderMapper extends BaseMapper<Order> {
     List<OrderListVO> selectOrderListToNotDistribute();
 
     /**
+     * 根据用户id和spuId查询未发货的商品订单信息
+     * @param userId 用户id
+     * @param spuId spuId
+     * @return 返回实体类
+     */
+    OrderListVO selectById(Long userId,Long spuId);
+
+    /**
      * 查询已发货订单列表的功能
      * @return 返回列表
      */

@@ -43,6 +43,30 @@ public class OrderListVO implements Serializable {
     private String url;
 
     /**
+     * 收货地址
+     */
+    @ApiModelProperty(value = "收货地址")
+    private String info;
+
+    /**
+     * 收货详细地址
+     */
+    @ApiModelProperty(value = "收货详细地址")
+    private String detailInfo;
+
+    /**
+     * 电话号码
+     */
+    @ApiModelProperty(value = "电话号码")
+    private String pnumber;
+
+    /**
+     * 标签
+     */
+    @ApiModelProperty(value = "标签")
+    private String tags;
+
+    /**
      * 物流名称
      */
     @ApiModelProperty(value = "物流名称")
