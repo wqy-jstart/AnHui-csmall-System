@@ -49,6 +49,12 @@ public class OrderAddNewDTO implements Serializable {
     private Double totalAmount;
 
     /**
+     * 退货理由
+     */
+    @ApiModelProperty(value = "退货理由")
+    private String backText;
+
+    /**
      * 交易流水号
      */
     @ApiModelProperty(value = "交易流水号")

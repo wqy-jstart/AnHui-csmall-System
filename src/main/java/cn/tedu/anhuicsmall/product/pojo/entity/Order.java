@@ -26,43 +26,43 @@ public class Order implements Serializable {
     /**
      * 用户id
      */
-    @ApiModelProperty(value = "用户id",required = true)
+    @ApiModelProperty(value = "用户id", required = true)
     private Long userId;
 
     /**
      * SPU商品详情id
      */
-    @ApiModelProperty(value = "SPU商品详情id",required = true)
+    @ApiModelProperty(value = "SPU商品详情id", required = true)
     private Long spuId;
 
     /**
      * 收货地址id
      */
-    @ApiModelProperty(value = "收货地址id",required = true)
+    @ApiModelProperty(value = "收货地址id", required = true)
     private Long addressId;
 
     /**
      * 物流id
      */
-    @ApiModelProperty(value = "物流id",required = true)
+    @ApiModelProperty(value = "物流id", required = true)
     private Long logisticsId;
 
     /**
      * 购买数量
      */
-    @ApiModelProperty(value = "购买数量",required = true)
+    @ApiModelProperty(value = "购买数量", required = true)
     private Integer number;
 
     /**
      * 订单号
      */
-    @ApiModelProperty(value = "订单号",required = true)
+    @ApiModelProperty(value = "订单号", required = true)
     private String outTradeNo;
 
     /**
      * 交易金额
      */
-    @ApiModelProperty(value = "交易金额",required = true)
+    @ApiModelProperty(value = "交易金额", required = true)
     private Double totalAmount;
 
     /**
@@ -105,7 +105,13 @@ public class Order implements Serializable {
      * 是否退货
      */
     @ApiModelProperty(value = "是否退货")
-    private Integer back;
+    private Integer isBack;
+
+    /**
+     * 退货理由
+     */
+    @ApiModelProperty(value = "退货理由")
+    private String backText;
 
     /**
      * 数据创建时间

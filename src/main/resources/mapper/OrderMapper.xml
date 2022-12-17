@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.tedu.anhuicsmall.product.mapper.OrderMapper">
 
-    <!--Integer selectCountToNoDib(Long userId);-->
+    <!--Integer selectCountToNoDib(Long userId);查询未发货的订单数量-->
     <select id="selectCountToNoDib" resultType="int">
         SELECT COUNT(*)
         FROM csmall_ups.ups_spu
@@ -22,10 +22,11 @@
           AND ups_spu.is_published = 1
           AND ups_spu.is_checked = 1
           AND ups_order.is_distribute = 0
+          AND ups_order.is_back = 0
           AND ups_user.id = #{userId}
     </select>
 
-    <!--Integer selectCountToDib(Long userId);-->
+    <!--Integer selectCountToDib(Long userId);查询已发货的订单数量-->
     <select id="selectCountToDib" resultType="int">
         SELECT COUNT(*)
         FROM csmall_ups.ups_spu
@@ -47,103 +48,95 @@
           AND ups_spu.is_published = 1
           AND ups_spu.is_checked = 1
           AND ups_order.is_distribute = 1
+          AND ups_order.is_back = 0
           AND ups_user.id = #{userId}
     </select>
 
-    <!--List<OrderListVO> selectByUserIdToNotDistribute(Long userId);-->
+    <!--List<OrderListVO> selectByUserIdToNotDistribute(Long userId);根据用户id查询未发货的订单列表-->
     <select id="selectByUserIdToNotDistribute" resultMap="QueryOrderListToNotDistribute">
-        SELECT ups_user.id        uid,
-               ups_spu.id         sid,
-               ups_spu.name       sname,
-               ups_picture.url,
-               ups_address.name   aname,
-               ups_address.info,
-               ups_address.detail_info,
-               ups_address.number pnumber,
-               ups_address.tags,
-               ups_order.number,
-               ups_order.out_trade_no,
-               ups_order.total_amount,
-               ups_order.trade_no,
-               ups_order.time,
-               ups_order.is_pay,
-               ups_order.is_distribute,
-               ups_order.is_take,
-               ups_order.is_comment,
-               ups_order.is_back,
-               ups_attribute.value_list,
-               ups_attribute.unit
+        SELECT
+        <include refid="StandardQueryFieldsToNotDistribute"/>
         FROM csmall_ups.ups_spu
-                 JOIN csmall_ups.ups_album
-                      ON ups_album.id = ups_spu.album_id
-                 JOIN csmall_ups.ups_picture
-                      ON ups_picture.album_id = ups_album.id
-                 JOIN csmall_ups.ups_attribute
-                      ON ups_spu.attribute_template_id = ups_attribute.template_id
-                 JOIN csmall_ups.ups_order
-                      ON ups_spu.id = ups_order.spu_id
-                 JOIN csmall_ups.ups_address
-                      ON ups_address.id = ups_order.address_id
-                 JOIN csmall_ups.ups_user
-                      ON ups_order.user_id = ups_user.id
+        JOIN csmall_ups.ups_album
+        ON ups_album.id = ups_spu.album_id
+        JOIN csmall_ups.ups_picture
+        ON ups_picture.album_id = ups_album.id
+        JOIN csmall_ups.ups_attribute
+        ON ups_spu.attribute_template_id = ups_attribute.template_id
+        JOIN csmall_ups.ups_order
+        ON ups_spu.id = ups_order.spu_id
+        JOIN csmall_ups.ups_address
+        ON ups_address.id = ups_order.address_id
+        JOIN csmall_ups.ups_user
+        ON ups_order.user_id = ups_user.id
         WHERE ups_picture.is_cover = 1
-          AND ups_spu.is_published = 1
-          AND ups_spu.is_checked = 1
-          AND ups_order.is_distribute = 0
-          AND ups_user.id = #{userId}
+        AND ups_spu.is_published = 1
+        AND ups_spu.is_checked = 1
+        AND ups_order.is_distribute = 0
+        AND ups_order.is_back = 0
+        AND ups_user.id = #{userId}
     </select>
 
-    <!--List<OrderListVO> selectByUserIdToDistribute(Long userId);-->
+    <!--List<OrderListVO> selectByUserIdToDistribute(Long userId);根据用户id查询已发货的订单列表-->
     <select id="selectByUserIdToDistribute" resultMap="QueryOrderListToDistribute">
-        SELECT ups_user.id        uid,
-               ups_spu.id         sid,
-               ups_spu.name       sname,
-               ups_picture.url,
-               ups_address.name   aname,
-               ups_address.info,
-               ups_address.detail_info,
-               ups_address.number pnumber,
-               ups_address.tags,
-               ups_logistics.name lname,
-               ups_order.number,
-               ups_order.out_trade_no,
-               ups_order.total_amount,
-               ups_order.trade_no,
-               ups_order.time,
-               ups_order.is_pay,
-               ups_order.is_distribute,
-               ups_order.is_take,
-               ups_order.is_comment,
-               ups_order.is_back,
-               ups_attribute.value_list,
-               ups_attribute.unit
+        SELECT
+        <include refid="StandardQueryFieldsToDistribute"/>
         FROM csmall_ups.ups_spu
-                 JOIN csmall_ups.ups_album
-                      ON ups_album.id = ups_spu.album_id
-                 JOIN csmall_ups.ups_picture
-                      ON ups_picture.album_id = ups_album.id
-                 JOIN csmall_ups.ups_attribute
-                      ON ups_spu.attribute_template_id = ups_attribute.template_id
-                 JOIN csmall_ups.ups_order
-                      ON ups_spu.id = ups_order.spu_id
-                 JOIN csmall_ups.ups_address
-                      ON ups_address.id = ups_order.address_id
-                 JOIN csmall_ups.ups_user
-                      ON ups_order.user_id = ups_user.id
-                 JOIN csmall_ups.ups_user_spu_logistics
-                      ON ups_user_spu_logistics.spu_id = ups_spu.id
-                 JOIN csmall_ups.ups_logistics
-                      ON ups_user_spu_logistics.logistics_id = ups_logistics.id
+        JOIN csmall_ups.ups_album
+        ON ups_album.id = ups_spu.album_id
+        JOIN csmall_ups.ups_picture
+        ON ups_picture.album_id = ups_album.id
+        JOIN csmall_ups.ups_attribute
+        ON ups_spu.attribute_template_id = ups_attribute.template_id
+        JOIN csmall_ups.ups_order
+        ON ups_spu.id = ups_order.spu_id
+        JOIN csmall_ups.ups_address
+        ON ups_address.id = ups_order.address_id
+        JOIN csmall_ups.ups_user
+        ON ups_order.user_id = ups_user.id
+        JOIN csmall_ups.ups_user_spu_logistics
+        ON ups_user_spu_logistics.spu_id = ups_spu.id
+        JOIN csmall_ups.ups_logistics
+        ON ups_user_spu_logistics.logistics_id = ups_logistics.id
         WHERE ups_picture.is_cover = 1
-          AND ups_spu.is_published = 1
-          AND ups_spu.is_checked = 1
-          AND ups_order.is_distribute = 1
-          AND ups_user.id = #{userId}
+        AND ups_spu.is_published = 1
+        AND ups_spu.is_checked = 1
+        AND ups_order.is_distribute = 1
+        AND ups_order.is_back = 0
+        AND ups_user.id = #{userId}
     </select>
 
     <!--查询已发货的订单列表-->
-    <!--List<OrderListVO> selectOrderListToDistribute();-->
+    <!--List<OrderListVO> selectOrderListToDistribute();查询后台已发货的订单列表-->
     <select id="selectOrderListToDistribute" resultMap="QueryOrderListToDistribute">
+        SELECT
+        <include refid="StandardQueryFieldsToDistribute"/>
+        FROM csmall_ups.ups_spu
+        JOIN csmall_ups.ups_album
+        ON ups_album.id = ups_spu.album_id
+        JOIN csmall_ups.ups_picture
+        ON ups_picture.album_id = ups_album.id
+        JOIN csmall_ups.ups_attribute
+        ON ups_spu.attribute_template_id = ups_attribute.template_id
+        JOIN csmall_ups.ups_order
+        ON ups_spu.id = ups_order.spu_id
+        JOIN csmall_ups.ups_address
+        ON ups_address.id = ups_order.address_id
+        JOIN csmall_ups.ups_user
+        ON ups_order.user_id = ups_user.id
+        JOIN csmall_ups.ups_user_spu_logistics
+        ON ups_user_spu_logistics.spu_id = ups_spu.id
+        JOIN csmall_ups.ups_logistics
+        ON ups_user_spu_logistics.logistics_id = ups_logistics.id
+        WHERE ups_picture.is_cover = 1
+        AND ups_spu.is_published = 1
+        AND ups_spu.is_checked = 1
+        AND ups_order.is_back = 0
+        AND ups_order.is_distribute = 1;
+    </select>
+
+    <!--List<OrderListVO> selectOrderListToBack();查询后台已退货的订单列表-->
+    <select id="selectOrderListToBack" resultMap="QueryOrderListToDistribute1">
         SELECT ups_user.id        uid,
                ups_spu.id         sid,
                ups_spu.name       sname,
@@ -153,7 +146,6 @@
                ups_address.detail_info,
                ups_address.number pnumber,
                ups_address.tags,
-               ups_logistics.name lname,
                ups_order.number,
                ups_order.out_trade_no,
                ups_order.total_amount,
@@ -164,6 +156,7 @@
                ups_order.is_take,
                ups_order.is_comment,
                ups_order.is_back,
+               ups_order.back_text,
                ups_attribute.value_list,
                ups_attribute.unit
         FROM csmall_ups.ups_spu
@@ -179,16 +172,106 @@
                       ON ups_address.id = ups_order.address_id
                  JOIN csmall_ups.ups_user
                       ON ups_order.user_id = ups_user.id
-                 JOIN csmall_ups.ups_user_spu_logistics
-                      ON ups_user_spu_logistics.spu_id = ups_spu.id
-                 JOIN csmall_ups.ups_logistics
-                      ON ups_user_spu_logistics.logistics_id = ups_logistics.id
         WHERE ups_picture.is_cover = 1
           AND ups_spu.is_published = 1
           AND ups_spu.is_checked = 1
-          AND ups_order.is_distribute = 1;
+          AND ups_order.is_back = 1
+    </select>
+    <!--已发货的查询结果集-->
+    <resultMap id="QueryOrderListToDistribute1" type="cn.tedu.anhuicsmall.product.pojo.vo.OrderListVO">
+        <id column="uid" property="userId"/>
+        <id column="sid" property="spuId"/>
+        <result column="sname" property="spuName"/>
+        <result column="url" property="url"/>
+        <result column="aname" property="addressName"/>
+        <result column="info" property="info"/>
+        <result column="detail_info" property="detailInfo"/>
+        <result column="pnumber" property="pnumber"/>
+        <result column="tags" property="tags"/>
+        <result column="number" property="number"/>
+        <result column="out_trade_no" property="outTradeNo"/>
+        <result column="total_amount" property="totalAmount"/>
+        <result column="trade_no" property="tradeNo"/>
+        <result column="time" property="time"/>
+        <result column="is_pay" property="isPay"/>
+        <result column="is_distribute" property="isDistribute"/>
+        <result column="is_take" property="isTake"/>
+        <result column="is_comment" property="isComment"/>
+        <result column="is_back" property="isBack"/>
+        <result column="back_text" property="backText"/>
+        <collection property="attributeList" ofType="cn.tedu.anhuicsmall.product.pojo.entity.Attribute">
+            <result column="value_List" property="valueList"/>
+            <result column="unit" property="unit"/>
+        </collection>
+    </resultMap>
+
+    <!--List<OrderListVO> selectOrderListToBackById(Long userId);根据用户id查询已退货的订单列表-->
+    <select id="selectOrderListToBackById" resultMap="QueryOrderListToDistribute1">
+        SELECT
+            ups_user.id        uid,
+            ups_spu.id         sid,
+            ups_spu.name       sname,
+            ups_picture.url,
+            ups_address.name   aname,
+            ups_address.info,
+            ups_address.detail_info,
+            ups_address.number pnumber,
+            ups_address.tags,
+            ups_order.number,
+            ups_order.out_trade_no,
+            ups_order.total_amount,
+            ups_order.trade_no,
+            ups_order.time,
+            ups_order.is_pay,
+            ups_order.is_distribute,
+            ups_order.is_take,
+            ups_order.is_comment,
+            ups_order.is_back,
+            ups_order.back_text,
+            ups_attribute.value_list,
+            ups_attribute.unit
+        FROM csmall_ups.ups_spu
+        JOIN csmall_ups.ups_album
+        ON ups_album.id = ups_spu.album_id
+        JOIN csmall_ups.ups_picture
+        ON ups_picture.album_id = ups_album.id
+        JOIN csmall_ups.ups_attribute
+        ON ups_spu.attribute_template_id = ups_attribute.template_id
+        JOIN csmall_ups.ups_order
+        ON ups_spu.id = ups_order.spu_id
+        JOIN csmall_ups.ups_address
+        ON ups_address.id = ups_order.address_id
+        JOIN csmall_ups.ups_user
+        ON ups_order.user_id = ups_user.id
+        WHERE ups_picture.is_cover = 1
+        AND ups_spu.is_published = 1
+        AND ups_spu.is_checked = 1
+        AND ups_order.is_back = 1
+        AND ups_user.id = #{userId}
     </select>
 
+    <!--Integer selectOrderCountToBackById(Long userId);根据用户id查询已退货的订单数量-->
+    <select id="selectOrderCountToBackById" resultType="int">
+        SELECT COUNT(*)
+        FROM csmall_ups.ups_spu
+                 JOIN csmall_ups.ups_album
+                      ON ups_album.id = ups_spu.album_id
+                 JOIN csmall_ups.ups_picture
+                      ON ups_picture.album_id = ups_album.id
+                 JOIN csmall_ups.ups_order
+                      ON ups_spu.id = ups_order.spu_id
+                 JOIN csmall_ups.ups_address
+                      ON ups_address.id = ups_order.address_id
+                 JOIN csmall_ups.ups_user
+                      ON ups_order.user_id = ups_user.id
+        WHERE ups_picture.is_cover = 1
+          AND ups_spu.is_published = 1
+          AND ups_spu.is_checked = 1
+          AND ups_order.is_back = 1
+          AND ups_user.id = #{userId}
+    </select>
+
+    <!--已发货的查询结果集-->
     <resultMap id="QueryOrderListToDistribute" type="cn.tedu.anhuicsmall.product.pojo.vo.OrderListVO">
         <id column="uid" property="userId"/>
         <id column="sid" property="spuId"/>
@@ -216,93 +299,142 @@
         </collection>
     </resultMap>
 
-    <!--OrderListVO selectById(Long userId,Long spuId);-->
-    <select id="selectById" resultMap="QueryOrderListToNotDistribute">
-        SELECT ups_user.id        uid,
-               ups_spu.id         sid,
-               ups_spu.name       sname,
-               ups_picture.url,
-               ups_address.name   aname,
-               ups_address.info,
-               ups_address.detail_info,
-               ups_address.number pnumber,
-               ups_address.tags,
-               ups_order.number,
-               ups_order.out_trade_no,
-               ups_order.total_amount,
-               ups_order.trade_no,
-               ups_order.time,
-               ups_order.is_pay,
-               ups_order.is_distribute,
-               ups_order.is_take,
-               ups_order.is_comment,
-               ups_order.is_back,
-               ups_attribute.value_list,
-               ups_attribute.unit
+    <!--OrderListVO selectByIdNoDib(Long userId,Long spuId);根据用户id和商品id查询未发货的详情信息-->
+    <select id="selectByIdNoDib" resultMap="QueryOrderListToNotDistribute">
+        SELECT
+        <include refid="StandardQueryFieldsToNotDistribute"/>
         FROM csmall_ups.ups_spu
-                 JOIN csmall_ups.ups_album
-                      ON ups_album.id = ups_spu.album_id
-                 JOIN csmall_ups.ups_picture
-                      ON ups_picture.album_id = ups_album.id
-                 JOIN csmall_ups.ups_attribute
-                      ON ups_spu.attribute_template_id = ups_attribute.template_id
-                 JOIN csmall_ups.ups_order
-                      ON ups_spu.id = ups_order.spu_id
-                 JOIN csmall_ups.ups_address
-                      ON ups_address.id = ups_order.address_id
-                 JOIN csmall_ups.ups_user
-                      ON ups_order.user_id = ups_user.id
+        JOIN csmall_ups.ups_album
+        ON ups_album.id = ups_spu.album_id
+        JOIN csmall_ups.ups_picture
+        ON ups_picture.album_id = ups_album.id
+        JOIN csmall_ups.ups_attribute
+        ON ups_spu.attribute_template_id = ups_attribute.template_id
+        JOIN csmall_ups.ups_order
+        ON ups_spu.id = ups_order.spu_id
+        JOIN csmall_ups.ups_address
+        ON ups_address.id = ups_order.address_id
+        JOIN csmall_ups.ups_user
+        ON ups_order.user_id = ups_user.id
         WHERE ups_picture.is_cover = 1
-          AND ups_spu.is_published = 1
-          AND ups_spu.is_checked = 1
-          AND ups_order.is_distribute = 0
-          AND ups_user.id = #{userId}
-          AND ups_spu.id = #{spuId}
+        AND ups_spu.is_published = 1
+        AND ups_spu.is_checked = 1
+        AND ups_order.is_distribute = 0
+        AND ups_order.is_back = 0
+        AND ups_user.id = #{userId}
+        AND ups_spu.id = #{spuId}
     </select>
 
-    <!--查询未发货的订单列表-->
-    <!--List<OrderListVO> selectOrderListToNotDistribute();-->
+    <!--OrderListVO selectById(Long userId,Long spuId);根据用户id和商品id查询已发货的详情信息-->
+    <select id="selectById" resultMap="QueryOrderListToDistribute">
+        SELECT
+        <include refid="StandardQueryFieldsToDistribute"/>
+        FROM csmall_ups.ups_spu
+        JOIN csmall_ups.ups_album
+        ON ups_album.id = ups_spu.album_id
+        JOIN csmall_ups.ups_picture
+        ON ups_picture.album_id = ups_album.id
+        JOIN csmall_ups.ups_attribute
+        ON ups_spu.attribute_template_id = ups_attribute.template_id
+        JOIN csmall_ups.ups_order
+        ON ups_spu.id = ups_order.spu_id
+        JOIN csmall_ups.ups_address
+        ON ups_address.id = ups_order.address_id
+        JOIN csmall_ups.ups_user
+        ON ups_order.user_id = ups_user.id
+        JOIN csmall_ups.ups_user_spu_logistics
+        ON ups_user_spu_logistics.spu_id = ups_spu.id
+        JOIN csmall_ups.ups_logistics
+        ON ups_user_spu_logistics.logistics_id = ups_logistics.id
+        WHERE ups_picture.is_cover = 1
+        AND ups_spu.is_published = 1
+        AND ups_spu.is_checked = 1
+        AND ups_order.is_distribute = 1
+        AND ups_order.is_back = 0
+        AND ups_user.id = #{userId}
+        AND ups_spu.id = #{spuId}
+    </select>
+
+    <!--List<OrderListVO> selectOrderListToNotDistribute(); 查询未发货的订单列表-->
     <select id="selectOrderListToNotDistribute" resultMap="QueryOrderListToNotDistribute">
-        SELECT ups_user.id        uid,
-               ups_spu.id         sid,
-               ups_spu.name       sname,
-               ups_picture.url,
-               ups_address.name   aname,
-               ups_address.info,
-               ups_address.detail_info,
-               ups_address.number pnumber,
-               ups_address.tags,
-               ups_order.number,
-               ups_order.out_trade_no,
-               ups_order.total_amount,
-               ups_order.trade_no,
-               ups_order.time,
-               ups_order.is_pay,
-               ups_order.is_distribute,
-               ups_order.is_take,
-               ups_order.is_comment,
-               ups_order.is_back,
-               ups_attribute.value_list,
-               ups_attribute.unit
+        SELECT
+        <include refid="StandardQueryFieldsToNotDistribute"/>
         FROM csmall_ups.ups_spu
-                 JOIN csmall_ups.ups_album
-                      ON ups_album.id = ups_spu.album_id
-                 JOIN csmall_ups.ups_picture
-                      ON ups_picture.album_id = ups_album.id
-                 JOIN csmall_ups.ups_attribute
-                      ON ups_spu.attribute_template_id = ups_attribute.template_id
-                 JOIN csmall_ups.ups_order
-                      ON ups_spu.id = ups_order.spu_id
-                 JOIN csmall_ups.ups_address
-                      ON ups_address.id = ups_order.address_id
-                 JOIN csmall_ups.ups_user
-                      ON ups_order.user_id = ups_user.id
+        JOIN csmall_ups.ups_album
+        ON ups_album.id = ups_spu.album_id
+        JOIN csmall_ups.ups_picture
+        ON ups_picture.album_id = ups_album.id
+        JOIN csmall_ups.ups_attribute
+        ON ups_spu.attribute_template_id = ups_attribute.template_id
+        JOIN csmall_ups.ups_order
+        ON ups_spu.id = ups_order.spu_id
+        JOIN csmall_ups.ups_address
+        ON ups_address.id = ups_order.address_id
+        JOIN csmall_ups.ups_user
+        ON ups_order.user_id = ups_user.id
         WHERE ups_picture.is_cover = 1
-          AND ups_spu.is_published = 1
-          AND ups_spu.is_checked = 1
-          AND ups_order.is_distribute = 0;
+        AND ups_spu.is_published = 1
+        AND ups_spu.is_checked = 1
+        AND ups_order.is_back = 0
+        AND ups_order.is_distribute = 0;
     </select>
 
+    <!--已发货的sql查询字段-->
+    <sql id="StandardQueryFieldsToDistribute">
+        <if test="true">
+            ups_user.id uid,
+            ups_spu.id sid,
+            ups_spu.name sname,
+            ups_picture.url,
+            ups_address.name aname,
+            ups_address.info,
+            ups_address.detail_info,
+            ups_address.number pnumber,
+            ups_address.tags,
+            ups_logistics.name lname,
+            ups_order.number,
+            ups_order.out_trade_no,
+            ups_order.total_amount,
+            ups_order.trade_no,
+            ups_order.time,
+            ups_order.is_pay,
+            ups_order.is_distribute,
+            ups_order.is_take,
+            ups_order.is_comment,
+            ups_order.is_back,
+            ups_attribute.value_list,
+            ups_attribute.unit
+        </if>
+    </sql>
+
+    <!--未发货的sql查询字段-->
+    <sql id="StandardQueryFieldsToNotDistribute">
+        <if test="true">
+            ups_user.id uid,
+            ups_spu.id sid,
+            ups_spu.name sname,
+            ups_picture.url,
+            ups_address.name aname,
+            ups_address.info,
+            ups_address.detail_info,
+            ups_address.number pnumber,
+            ups_address.tags,
+            ups_order.number,
+            ups_order.out_trade_no,
+            ups_order.total_amount,
+            ups_order.trade_no,
+            ups_order.time,
+            ups_order.is_pay,
+            ups_order.is_distribute,
+            ups_order.is_take,
+            ups_order.is_comment,
+            ups_order.is_back,
+            ups_attribute.value_list,
+            ups_attribute.unit
+        </if>
+    </sql>
+
+    <!--未发货的查询结果集-->
     <resultMap id="QueryOrderListToNotDistribute" type="cn.tedu.anhuicsmall.product.pojo.vo.OrderListVO">
         <id column="uid" property="userId"/>
         <id column="sid" property="spuId"/>

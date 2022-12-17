@@ -21,4 +21,9 @@ public class OrderServiceTests {
     public void selectToOrder1(){
         orderService.selectOrderListToNotDistribute().forEach(System.out::println);
     }
+
+    @Test
+    public void selectToOrder2(){
+        orderService.selectOrderListToBack().forEach(System.out::println);
+    }
 }

@@ -133,6 +133,12 @@ public class OrderListVO implements Serializable {
     private Integer isBack;
 
     /**
+     * 退货理由
+     */
+    @ApiModelProperty(value = "退货理由")
+    private String backText;
+
+    /**
      * 属性集合
      */
     private List<Attribute> attributeList;

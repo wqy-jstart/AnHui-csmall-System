@@ -19,4 +19,11 @@ public interface IUserAndSpuAndLogisticsService extends IService<UserAndSpuAndLo
      * @param uslDTO 信息
      */
     void insert(UserAndSpuAndLogisticsAddNewDTO uslDTO);
+
+    /**
+     * 根据用户id和spuId删除订单信息
+     * @param userId 用户id
+     * @param spuId spuId
+     */
+    void deleteToBack(Long userId,Long spuId);
 }

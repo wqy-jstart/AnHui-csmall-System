@@ -135,7 +135,7 @@ public class OrderController {
      *
      * @return 返回未发货的订单实体类
      */
-    @ApiOperation("根据用户id和spuId查询订单信息")
+    @ApiOperation("根据用户id和spuId查询未发货订单信息")
     @ApiOperationSupport(order = 503)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId",value = "用户id",required = true,dataType = "long"),
@@ -146,8 +146,85 @@ public class OrderController {
                                                          @PathVariable Long userId,
                                                          @PathVariable Long spuId) {
         log.debug("开始处理根据用户id{}和spuId{}查询已发货的订单信息",userId,spuId);
+        OrderListVO orderVO = orderService.selectByIdNoDib(userId, spuId);
+        return JsonResult.ok(orderVO);
+    }
+
+    /**
+     * 处理根据用户id和spuId查询已发货的订单信息
+     *
+     * @return 返回已发货的订单实体类
+     */
+    @ApiOperation("根据用户id和spuId查询已发货订单信息")
+    @ApiOperationSupport(order = 503)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId",value = "用户id",required = true,dataType = "long"),
+            @ApiImplicitParam(name = "spuId",value = "spuId",required = true,dataType = "long")
+    })
+    @GetMapping("/{userId:[0-9]+}/{spuId:[0-9]+}/selectByIdToDib")
+    public JsonResult<OrderListVO> selectToDistribute(@Range(min = 1, message = "查询失败,id无效!")
+                                                         @PathVariable Long userId,
+                                                         @PathVariable Long spuId) {
+        log.debug("开始处理根据用户id{}和spuId{}查询已发货的订单信息",userId,spuId);
         OrderListVO orderVO = orderService.selectById(userId, spuId);
         return JsonResult.ok(orderVO);
+    }
+
+    /**
+     * 处理退货业务
+     * @param orderAddNewDTO 退货信息
+     * @return 返回结果集
+     */
+    @ApiOperation("处理退货业务")
+    @ApiOperationSupport(order = 300)
+    @PostMapping("/updateToBack")
+    public JsonResult<Void> updateToBack(OrderAddNewDTO orderAddNewDTO){
+        log.debug("开始处理修改退货业务的请求,参数:{}",orderAddNewDTO);
+        orderService.handleBackProduct(orderAddNewDTO);
+        return JsonResult.ok();
+    }
+
+    /**
+     * 处理查询已退货的订单列表
+     * @return 返回结果集
+     */
+    @GetMapping("/selectListToBack")
+    public JsonResult<List<OrderListVO>> selectListToBack(){
+        log.debug("开始处理查询已退货的订单列表");
+        List<OrderListVO> orderListVOS = orderService.selectOrderListToBack();
+        return JsonResult.ok(orderListVOS);
+    }
+
+    /**
+     * 根据用户id查询退货列表
+     * @param userId 用户id
+     * @return 返回结果集
+     */
+    @ApiOperation("根据用户id查询退货列表")
+    @ApiOperationSupport(order = 500)
+    @ApiImplicitParam(name = "userId",value = "用户id",required = true,dataType = "long")
+    @GetMapping("/{userId:[0-9]+}/selectListToBackById")
+    public JsonResult<List<OrderListVO>> selectListToBackById(@Range(min = 1,message = "查询失败,该用户id无效!")
+                                                                          @PathVariable Long userId){
+        log.debug("查询用户id为{}的退货列表",userId);
+        List<OrderListVO> orderListVOS = orderService.selectOrderListToBackById(userId);
+        return JsonResult.ok(orderListVOS);
+    }
+
+    /**
+     * 根据用户id查询退货数量
+     * @param userId 用户id
+     * @return 返回结果集
+     */
+    @ApiOperation("根据用户id查询退货数量")
+    @ApiOperationSupport(order = 500)
+    @ApiImplicitParam(name = "userId",value = "用户id",required = true,dataType = "long")
+    @GetMapping("/{userId:[0-9]+}/selectCountToBack")
+    public JsonResult<Integer> selectCountToBack(@Range(min = 1,message = "查询失败,该用户id无效!")
+                                                     @PathVariable Long userId){
+        log.debug("开始处理查询用户id为{}的退货数量",userId);
+        Integer count = orderService.selectOrderCountToBackById(userId);
+        return JsonResult.ok(count);
     }
 
     /**

@@ -49,6 +49,7 @@ public class UserAndSpuAndLogisticsServiceImpl extends ServiceImpl<UserAndSpuAnd
 
     /**
      * 处理发货的业务
+     *
      * @param uslDTO 信息
      */
     @Override
@@ -99,6 +100,50 @@ public class UserAndSpuAndLogisticsServiceImpl extends ServiceImpl<UserAndSpuAnd
             String message = "修改失败,服务器忙,请稍后再试...";
             log.debug(message);
             throw new ServiceException(ServiceCode.ERR_UPDATE, message);
+        }
+    }
+
+    /**
+     * 确认退货的请求
+     *
+     * @param userId 用户id
+     * @param spuId  spuId
+     */
+    @Override
+    public void deleteToBack(Long userId, Long spuId) {
+        log.debug("开始处理根据用户id[{}]和SpuId[{}]删除订单功能", userId, spuId);
+        User queryUser = userMapper.selectById(userId);
+        if (queryUser == null) {
+            String message = "查询失败,该用户不存在";
+            log.debug(message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
+        }
+        Spu querySpu = spuMapper.selectById(spuId);
+        if (querySpu == null) {
+            String message = "查询失败,该Spu不存在";
+            log.debug(message);
+            throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
+        }
+
+        QueryWrapper<Order> wrapperToOrder = new QueryWrapper<>();
+        wrapperToOrder.eq("user_id", userId);
+        wrapperToOrder.eq("spu_id", spuId);
+        int delete = orderMapper.delete(wrapperToOrder);
+        if (delete > 1) {
+            String message = "操作失败,服务器忙,请稍后再试...";
+            log.debug(message);
+            throw new ServiceException(ServiceCode.ERR_DELETE, message);
+        }
+
+        QueryWrapper<UserAndSpuAndLogistics> wrapper = new QueryWrapper<>();
+        wrapper.eq("user_id", userId);
+        wrapper.eq("spu_id", spuId);
+        int rows = uslMapper.delete(wrapper);
+
+        if (rows > 1) {
+            String message = "操作失败,服务器忙,请稍后再试...";
+            log.debug(message);
+            throw new ServiceException(ServiceCode.ERR_DELETE, message);
         }
     }
 }

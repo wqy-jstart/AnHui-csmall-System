@@ -56,6 +56,14 @@ public interface OrderMapper extends BaseMapper<Order> {
      * @param spuId spuId
      * @return 返回实体类
      */
+    OrderListVO selectByIdNoDib(Long userId,Long spuId);
+
+    /**
+     * 根据用户id和spuId查询已发货的商品订单信息
+     * @param userId 用户id
+     * @param spuId spuId
+     * @return 返回实体类
+     */
     OrderListVO selectById(Long userId,Long spuId);
 
     /**
@@ -63,4 +71,22 @@ public interface OrderMapper extends BaseMapper<Order> {
      * @return 返回列表
      */
     List<OrderListVO> selectOrderListToDistribute();
+
+    /**
+     * 查询已退货订单列表的功能
+     * @return 返回列表
+     */
+    List<OrderListVO> selectOrderListToBack();
+
+    /**
+     * 根据用户id查询已退货订单列表的功能
+     * @return 返回列表
+     */
+    List<OrderListVO> selectOrderListToBackById(Long userId);
+
+    /**
+     * 根据用户id查询已退货订单数量的功能
+     * @return 返回列表
+     */
+    Integer selectOrderCountToBackById(Long userId);
 }
