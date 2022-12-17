@@ -32,7 +32,7 @@ import java.util.List;
 public class CartController {
 
     public CartController(){
-        log.debug("创建控制器类:artController");
+        log.debug("创建控制器类:CartController");
     }
 
     // 注入购物车业务层接口
