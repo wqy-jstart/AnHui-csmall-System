@@ -113,6 +113,15 @@ public class PayController {
         return result;
     }
 
+    /**
+     * 该方法可以获取支付成功后,支付宝回调时传递的信息
+     * @param request HttpServletRequest
+     * @param session 回话
+     * @param model model
+     * @return 返回页面信息
+     * @throws UnsupportedEncodingException 不支持的转码异常
+     * @throws AlipayApiException  支付时发生的异常
+     */
     @RequestMapping("/returnUrl")
     public String returnUrlMethod(HttpServletRequest request,HttpSession session,Model model) throws UnsupportedEncodingException, AlipayApiException {
         log.debug("执行同步回调...");
