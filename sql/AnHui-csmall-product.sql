@@ -580,6 +580,7 @@ CREATE TABLE ups_order
     is_take       tinyint(3) unsigned DEFAULT '0' COMMENT '是否收货，1=已收货，0=未收货',
     is_comment    tinyint(3) unsigned DEFAULT '0' COMMENT '是否评价，1=已评价，0=未评价',
     is_back       tinyint(3) unsigned DEFAULT '0' COMMENT '是否退款，1=已退款，0=未退款',
+    back_text     varchar(255)  DEFAULT NULL COMMENT '退货理由',
     gmt_create    datetime            DEFAULT NULL COMMENT '数据创建时间',
     gmt_modified  datetime            DEFAULT NULL COMMENT '数据最后修改时间',
     PRIMARY KEY (id)
