@@ -59,4 +59,9 @@ public interface IBrandService extends IService<Brand> {
      * @param id 要禁用的品牌id
      */
     void setDisable(Long id);
+
+    /**
+     * 该方法用于手动重建缓存
+     */
+    void rebuildCache();
 }

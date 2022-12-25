@@ -39,6 +39,13 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
+        <!-- Spring Boot Data - ...  是Spring的一个系列框架-->
+        <!-- Spring Boot Data redis的依赖项,用于实现Redis编程 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
         <!--   支付宝支付的依赖     -->
         <dependency>
             <groupId>com.alipay.sdk</groupId>
