@@ -111,9 +111,9 @@ public class BrandController {
     @ApiOperation("查询品牌列表")
     @ApiOperationSupport(order = 501)
     @GetMapping("")
-    public JsonResult<List<Object>> selectList() {
+    public JsonResult<List<Brand>> selectList() {
         log.debug("开始处理查询品牌列表的请求,无参!");
-        List<Object> objects = brandService.selectList();
+        List<Brand> objects = brandService.selectList();
         return JsonResult.ok(objects);
     }
 

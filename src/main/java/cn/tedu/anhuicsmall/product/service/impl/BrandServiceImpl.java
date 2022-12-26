@@ -181,9 +181,9 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
      * @return 返回列表信息
      */
     @Override
-    public List<Object> selectList() {
+    public List<Brand> selectList() {
         log.debug("开始处理查询品牌列表的功能");
-        return brandMapper.selectObjs(null);
+        return brandRedisRepository.list();
     }
 
     /**

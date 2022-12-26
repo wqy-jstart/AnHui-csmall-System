@@ -18,7 +18,7 @@ import java.util.List;
  * @Version 0.0.1
  */
 @Slf4j
-//@Component // 声明一个组件类,可被Spring调用
+@Component // 声明一个组件类,可被Spring调用
 public class CachePreload implements ApplicationRunner {
 
     // 注入品牌的持久层接口

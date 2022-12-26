@@ -46,7 +46,7 @@ public interface IBrandService extends IService<Brand> {
      * 处理查询后台品牌列表的功能
      * @return 品牌列表集合
      */
-    List<Object> selectList();
+    List<Brand> selectList();
 
     /**
      * 处理启用品牌的功能
