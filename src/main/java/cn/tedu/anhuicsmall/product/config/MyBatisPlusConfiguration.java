@@ -1,7 +1,9 @@
 package cn.tedu.anhuicsmall.product.config;
 
+import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -19,5 +21,11 @@ public class MyBatisPlusConfiguration {
 
     public MyBatisPlusConfiguration(){
         log.debug("创建配置类对象:MyBatisPlusConfiguration");
+    }
+
+    // MyBatis-Plus自带的分页插件
+    @Bean
+    public PaginationInterceptor paginationInterceptor(){
+        return new PaginationInterceptor();
     }
 }
