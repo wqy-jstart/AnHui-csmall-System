@@ -49,6 +49,20 @@ public interface IBrandService extends IService<Brand> {
     List<Brand> selectList();
 
     /**
+     * 查询品牌数据的条数
+     * @return 返回查询后的品牌条数
+     */
+    Integer count();
+
+    /**
+     * 处理分页查询
+     * @param current 当前页数
+     * @param size 每页的数量
+     * @return 返回查询非分页列表数据
+     */
+    List<Brand> selectToPage(Integer current,Integer size);
+
+    /**
      * 处理启用品牌的功能
      * @param id 要启用的品牌id
      */

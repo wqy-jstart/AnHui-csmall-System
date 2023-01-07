@@ -8,6 +8,7 @@ import cn.tedu.anhuicsmall.product.web.JsonResult;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
@@ -115,6 +116,40 @@ public class BrandController {
         log.debug("开始处理查询品牌列表的请求,无参!");
         List<Brand> objects = brandService.selectList();
         return JsonResult.ok(objects);
+    }
+
+    /**
+     * 处理查询品牌数量的请求
+     * @return 返回查询的品牌数量
+     */
+    @ApiOperation("查询品牌数量")
+    @ApiOperationSupport(order = 502)
+    @GetMapping("/selectCount")
+    public JsonResult<Integer> selectCount(){
+        log.debug("开始处理查询品牌数量的请求，无参！");
+        Integer count = brandService.count();
+        return JsonResult.ok(count);
+    }
+
+    /**
+     * 处理分页查询的请求
+     * @param current 当前页
+     * @param size 页面大小
+     * @return 返回查询的结果
+     */
+    @ApiOperation("分页查询")
+    @ApiOperationSupport(order = 504)
+    @ApiImplicitParams ({
+        @ApiImplicitParam(name = "current",value = "当前页",required = true,dataType = "int"),
+        @ApiImplicitParam(name = "size",value = "页面大小",required = true,dataType = "int")
+    })
+    @GetMapping("/{current:[0-9]+}/{size:[0-9]+}/selectToPage")
+    public JsonResult<List<Brand>> selectToPage(@Range(min = 1,message = "查询失败,参数无效！")
+                                                @PathVariable Integer current,
+                                                @PathVariable Integer size){
+        log.debug("开始处理分页查询的请求，页数:{},页面大小:{}",current,size);
+        List<Brand> brands = brandService.selectToPage(current, size);
+        return JsonResult.ok(brands);
     }
 
     /**

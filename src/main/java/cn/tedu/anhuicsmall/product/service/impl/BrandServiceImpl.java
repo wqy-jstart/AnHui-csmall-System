@@ -11,6 +11,8 @@ import cn.tedu.anhuicsmall.product.repo.IAlbumRedisRepository;
 import cn.tedu.anhuicsmall.product.service.IBrandService;
 import cn.tedu.anhuicsmall.product.web.ServiceCode;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -166,6 +168,30 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
     public List<Brand> selectList() {
         log.debug("开始处理查询品牌列表的功能");
         return brandMapper.selectList(null);
+    }
+
+    /**
+     * 处理查询品牌数量的功能
+     * @return 返回查询的品牌数量
+     */
+    @Override
+    public Integer count() {
+        log.debug("开始处理查询品牌数量的业务，无参！");
+        return brandMapper.selectCount(null);
+    }
+
+    /**
+     * 处理分页查询的功能
+     * @param current 当前页数
+     * @param size 每页的数量
+     * @return 返回查询的结果
+     */
+    @Override
+    public List<Brand> selectToPage(Integer current, Integer size) {
+        log.debug("开始处理分页查询的功能，当前页为:{};每页的数量为:{}",current,size);
+        Page<Brand> page = new Page<>(current,size);
+        IPage<Brand> page1 = brandMapper.selectPage(page,null);
+        return page1.getRecords();
     }
 
     /**
