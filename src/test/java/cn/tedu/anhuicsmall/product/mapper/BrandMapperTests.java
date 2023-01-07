@@ -25,8 +25,8 @@ public class BrandMapperTests {
     public void page(){
         // 1:当前页  2:页面大小
         Page<Brand> page = new Page<>(2,4);// 创建分页对象
-        IPage<Brand> page1 = brandMapper.selectPage(page, null);
+        IPage<Brand> page1 = brandMapper.selectPage(page, null);// 接口
         page1.getRecords().forEach(System.out::println);
-        System.out.println("总页数为："+page.getTotal());
+        System.out.println("总页数为："+page1.getTotal());
     }
 }

@@ -50,5 +50,10 @@ public interface IAlbumService extends IService<Album> {
      * 处理查询后台相册列表的功能
      * @return 相册列表集合
      */
-    List<Object> selectList();
+    List<Album> selectList();
+
+    /**
+     * 该方法用于手动重建缓存
+     */
+    void rebuildCache();
 }

@@ -1,5 +1,6 @@
 package cn.tedu.anhuicsmall.product.schedule;
 
+import cn.tedu.anhuicsmall.product.service.IAlbumService;
 import cn.tedu.anhuicsmall.product.service.IBrandService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Component;
 public class CacheSchedule {
 
     @Autowired
-    private IBrandService brandService;
+    private IAlbumService albumService;
 
     public CacheSchedule() {
         log.debug("创建计划任务对象:CacheSchedule");
@@ -25,8 +26,8 @@ public class CacheSchedule {
 
     @Scheduled(fixedRate = 5 * 60 * 1000)
     public void rebuildCache() {
-        log.debug("开始执行【重建品牌缓存】计划任务…………");
-        brandService.rebuildCache();// 调用BrandService中重新加载Redis缓存的方法
-        log.debug("本次【重建品牌缓存】计划任务执行完成！");
+        log.debug("开始执行【重建相册缓存】计划任务…………");
+        albumService.rebuildCache();// 调用BrandService中重新加载Redis缓存的方法
+        log.debug("本次【重建相册缓存】计划任务执行完成！");
     }
 }

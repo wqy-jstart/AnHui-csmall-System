@@ -109,9 +109,22 @@ public class AlbumController {
     @ApiOperation("查询相册列表")
     @ApiOperationSupport(order = 501)
     @GetMapping("")
-    public JsonResult<List<Object>> selectList() {
+    public JsonResult<List<Album>> selectList() {
         log.debug("开始处理查询相册列表的功能,无参!");
-        List<Object> objects = albumService.selectList();
+        List<Album> objects = albumService.selectList();
         return JsonResult.ok(objects);
+    }
+
+    /**
+     * 重建相册缓存
+     * @return 返回结果集
+     */
+    @ApiOperation("重建相册缓存")
+    @ApiOperationSupport(order = 600)
+    @PostMapping("/cache/rebuild")
+    public JsonResult<Void> rebuildCache(){
+        log.debug("开始处理[重建缓存]的请求,无参!");
+        albumService.rebuildCache();
+        return JsonResult.ok();
     }
 }

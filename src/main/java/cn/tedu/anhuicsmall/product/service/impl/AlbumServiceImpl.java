@@ -6,7 +6,10 @@ import cn.tedu.anhuicsmall.product.mapper.PictureMapper;
 import cn.tedu.anhuicsmall.product.pojo.dto.AlbumAddNewDTO;
 import cn.tedu.anhuicsmall.product.pojo.dto.AlbumUpdateDTO;
 import cn.tedu.anhuicsmall.product.pojo.entity.Album;
+import cn.tedu.anhuicsmall.product.pojo.entity.Brand;
 import cn.tedu.anhuicsmall.product.pojo.entity.Picture;
+import cn.tedu.anhuicsmall.product.repo.IAlbumRedisRepository;
+import cn.tedu.anhuicsmall.product.repo.impl.AlbumRedisRepositoryImpl;
 import cn.tedu.anhuicsmall.product.service.IAlbumService;
 import cn.tedu.anhuicsmall.product.web.ServiceCode;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -41,6 +44,10 @@ public class AlbumServiceImpl extends ServiceImpl<AlbumMapper, Album> implements
     // 注入图片的持久层接口
     @Autowired
     private PictureMapper pictureMapper;
+    
+    // 注入相册的Redis缓存实现类
+    @Autowired
+    private IAlbumRedisRepository albumRedisRepository;
 
     /**
      * 处理添加相册的功能
@@ -150,15 +157,26 @@ public class AlbumServiceImpl extends ServiceImpl<AlbumMapper, Album> implements
      */
     @Override
     public Album selectById(Long albumId) {
-        log.debug("开始处理查询id为:{}的相册信息", albumId);
-        Album queryAlbum = albumMapper.selectById(albumId);
-        if (queryAlbum == null) {
-            String message = "查询失败,该相册id不存在!";
+        log.debug("开始处理查询id为{}的相册详情",albumId);
+        log.debug("将从Redis中获取相关数据...");
+        Album album = albumRedisRepository.get(albumId);
+
+        if (album != null){
+            log.debug("命中缓存,即将返回:{}",album);
+            return album;
+        }
+
+        log.debug("未命中缓存,即将向数据库中查询数据...");
+        album = albumMapper.selectById(albumId);
+        if (album == null) {
+            String message = "查询失败,该相册数据不存在!";
             log.debug(message);
             throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
         }
-
-        return queryAlbum;
+        log.debug("从数据库中查询到有效结果,将查询结果存入缓存中...");
+        albumRedisRepository.save(album);
+        log.debug("开始返回结果!");
+        return album;
     }
 
     /**
@@ -167,8 +185,34 @@ public class AlbumServiceImpl extends ServiceImpl<AlbumMapper, Album> implements
      * @return 返回结果集
      */
     @Override
-    public List<Object> selectList() {
+    public List<Album> selectList() {
         log.debug("开始处理查询相册列表的功能,无参!");
-        return albumMapper.selectObjs(null);
+        return albumRedisRepository.list();
+    }
+
+    /**
+     * 手动重建Redis缓存的方法
+     */
+    @Override
+    public void rebuildCache() {
+        log.debug("准备删除Redis缓存中的相册数据...");
+        albumRedisRepository.deleteAll();// 清除缓存中的数据,防止缓存堆积过多,显示的列表数据冗余
+        log.debug("删除Redis缓存中的相册数据,完成!");
+
+        log.debug("准备从数据库中读取相册列表...");
+        List<Album> list = albumMapper.selectList(null); // 利用Mapper查询列表放到List中
+        log.debug("从数据库中读取相册列表，完成！");
+
+        log.debug("准备将相册列表写入到Redis缓存...");
+        albumRedisRepository.save(list);// 利用相册的Redis接口调用save转入要保存的列表,加载到缓存中
+        log.debug("将相册列表写入到Redis缓存，完成！");
+
+        log.debug("准备将各相册详情写入Redis缓存...");
+        for (Album album : list) {// 遍历拿到的相册列表
+            Long id = album.getId();// 获取遍历的每个相册列表的id
+            Album albumStandardVO = albumMapper.selectById(id);// 利用拿到的id来查询对应的相册详情
+            albumRedisRepository.save(albumStandardVO);// 将每一个相册详情放到Redis缓存中
+        }
+        log.debug("将各相册详情写入到Redis缓存中,完成!");
     }
 }

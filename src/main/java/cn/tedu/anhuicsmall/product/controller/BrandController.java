@@ -150,18 +150,4 @@ public class BrandController {
         brandService.setDisable(brandId);
         return JsonResult.ok();
     }
-
-    /**
-     * 重建品牌缓存
-     * @return 返回结果集
-     */
-    @ApiOperation("重建品牌缓存")
-    @ApiOperationSupport(order = 600)
-    @PostMapping("/cache/rebuild")
-    public JsonResult<Void> rebuildCache(){
-        log.debug("开始处理[重建缓存]的请求,无参!");
-        brandService.rebuildCache();
-        return JsonResult.ok();
-    }
-
 }

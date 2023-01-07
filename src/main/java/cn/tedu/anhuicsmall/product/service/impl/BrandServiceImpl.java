@@ -5,10 +5,9 @@ import cn.tedu.anhuicsmall.product.mapper.BrandAndCategoryMapper;
 import cn.tedu.anhuicsmall.product.mapper.BrandMapper;
 import cn.tedu.anhuicsmall.product.pojo.dto.BrandAddNewDTO;
 import cn.tedu.anhuicsmall.product.pojo.dto.BrandUpdateDTO;
-import cn.tedu.anhuicsmall.product.pojo.entity.Banner;
 import cn.tedu.anhuicsmall.product.pojo.entity.Brand;
 import cn.tedu.anhuicsmall.product.pojo.entity.BrandAndCategory;
-import cn.tedu.anhuicsmall.product.repo.IBrandRedisRepository;
+import cn.tedu.anhuicsmall.product.repo.IAlbumRedisRepository;
 import cn.tedu.anhuicsmall.product.service.IBrandService;
 import cn.tedu.anhuicsmall.product.web.ServiceCode;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -41,10 +40,6 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
     // 注入品牌与类别的持久层接口
     @Autowired
     private BrandAndCategoryMapper brandAndCategoryMapper;
-
-    // 注入品牌的Redis缓存接口
-    @Autowired
-    private IBrandRedisRepository brandRedisRepository;
 
     /**
      * 处理添加品牌数据的业务
@@ -154,25 +149,12 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
      */
     @Override
     public Brand selectById(Long brandId) {
-        log.debug("开始处理查询id为{}的品牌详情",brandId);
-        log.debug("将从Redis中获取相关数据...");
-        Brand brand = brandRedisRepository.get(brandId);
-
-        if (brand != null){
-            log.debug("命中缓存,即将返回:{}",brand);
-            return brand;
-        }
-
-        log.debug("未命中缓存,即将向数据库中查询数据...");
-        brand = brandMapper.selectById(brandId);
+        Brand brand = brandMapper.selectById(brandId);
         if (brand == null) {
             String message = "查询失败,该品牌数据不存在!";
             log.debug(message);
             throw new ServiceException(ServiceCode.ERR_NOT_FOUND, message);
         }
-        log.debug("从数据库中查询到有效结果,将查询结果存入缓存中...");
-        brandRedisRepository.save(brand);
-        log.debug("开始返回结果!");
         return brand;
     }
 
@@ -183,7 +165,7 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
     @Override
     public List<Brand> selectList() {
         log.debug("开始处理查询品牌列表的功能");
-        return brandRedisRepository.list();
+        return brandMapper.selectList(null);
     }
 
     /**
@@ -204,32 +186,6 @@ public class BrandServiceImpl extends ServiceImpl<BrandMapper, Brand> implements
     @Override
     public void setDisable(Long id) {
         updateEnableById(id, 0);
-    }
-
-    /**
-     * 手动重建Redis缓存的方法
-     */
-    @Override
-    public void rebuildCache() {
-        log.debug("准备删除Redis缓存中的品牌数据...");
-        brandRedisRepository.deleteAll();// 清除缓存中的数据,防止缓存堆积过多,显示的列表数据冗余
-        log.debug("删除Redis缓存中的品牌数据,完成!");
-
-        log.debug("准备从数据库中读取品牌列表...");
-        List<Brand> list = brandMapper.selectList(null); // 利用Mapper查询列表放到List中
-        log.debug("从数据库中读取品牌列表，完成！");
-
-        log.debug("准备将品牌列表写入到Redis缓存...");
-        brandRedisRepository.save(list);// 利用品牌的Redis接口调用save转入要保存的列表,加载到缓存中
-        log.debug("将品牌列表写入到Redis缓存，完成！");
-
-        log.debug("准备将各品牌详情写入Redis缓存...");
-        for (Brand brand : list) {// 遍历拿到的品牌列表
-            Long id = brand.getId();// 获取遍历的每个品牌列表的id
-            Brand brandStandardVO = brandMapper.selectById(id);// 利用拿到的id来查询对应的品牌详情
-            brandRedisRepository.save(brandStandardVO);// 将每一个品牌详情放到Redis缓存中
-        }
-        log.debug("将各品牌详情写入到Redis缓存中,完成!");
     }
 
     /**
