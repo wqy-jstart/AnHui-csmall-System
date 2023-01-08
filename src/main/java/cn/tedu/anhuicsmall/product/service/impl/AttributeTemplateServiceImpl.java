@@ -10,6 +10,8 @@ import cn.tedu.anhuicsmall.product.pojo.entity.AttributeTemplate;
 import cn.tedu.anhuicsmall.product.service.IAttributeTemplateService;
 import cn.tedu.anhuicsmall.product.web.ServiceCode;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -169,5 +171,29 @@ public class AttributeTemplateServiceImpl extends ServiceImpl<AttributeTemplateM
     public List<Object> selectList() {
         log.debug("开始处理查询属性模板列表的功能,无参!");
         return attributeTemplateMapper.selectObjs(null);
+    }
+
+    /**
+     * 处理查询属性模板数量的功能
+     * @return 返回属性模板的数量
+     */
+    @Override
+    public Integer selectCount() {
+        log.debug("开始处理查询属性模板数量的功能，无参！");
+        return attributeTemplateMapper.selectCount(null);
+    }
+
+    /**
+     * 处理分页查询属性模板的功能
+     * @param current 当前页码
+     * @param size 当前页数
+     * @return 返回分页的列表数据
+     */
+    @Override
+    public List<AttributeTemplate> selectToPage(Integer current, Integer size) {
+        log.debug("开始处理分页查询属性模板列表的功能，当前页为:{},每页数量为:{}",current,size);
+        Page<AttributeTemplate> page = new Page<>(current,size);
+        IPage<AttributeTemplate> page1 = attributeTemplateMapper.selectPage(page, null);
+        return page1.getRecords();
     }
 }

@@ -48,4 +48,18 @@ public interface IAttributeTemplateService extends IService<AttributeTemplate> {
      * @return 属性模板列表集合
      */
     List<Object> selectList();
+
+    /**
+     * 查询属性模板的数量
+     * @return 返回属性模板的数量
+     */
+    Integer selectCount();
+
+    /**
+     * 分页查询属性模板列表
+     * @param current 当前页码
+     * @param size 当前页数
+     * @return 返回查询的属性模板分页列表
+     */
+    List<AttributeTemplate> selectToPage(Integer current, Integer size);
 }

@@ -8,6 +8,7 @@ import cn.tedu.anhuicsmall.product.web.JsonResult;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
@@ -110,5 +111,39 @@ public class AttributeTemplateController {
         log.debug("开始处理查询属性模板列表的请求,无参!");
         List<Object> objects = attributeTemplateService.selectList();
         return JsonResult.ok(objects);
+    }
+
+    /**
+     * 处理查询属性模板数量的请求
+     * @return 返回属性模板的数量
+     */
+    @ApiOperation("查询属性模板的数量")
+    @ApiOperationSupport(order = 502)
+    @GetMapping("/selectCount")
+    public JsonResult<Integer> selectCount(){
+        log.debug("开始处理查询属性模板数量的请求，无参！");
+        Integer integer = attributeTemplateService.selectCount();
+        return JsonResult.ok(integer);
+    }
+
+    /**
+     * 处理分页查询属性模板列表的请求
+     * @param current 当前页
+     * @param size 每页数量
+     * @return 返回分页的里列表数据
+     */
+    @ApiOperation("分页查询属性模板列表")
+    @ApiOperationSupport(order = 503)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "current",value = "当前页码",required = true,dataType = "int"),
+            @ApiImplicitParam(name = "size",value = "每页数量",required = true,dataType = "int")
+    })
+    @GetMapping("/{current:[0-9]+}/{size:[0-9]+}/selectToPage")
+    public JsonResult<List<AttributeTemplate>> selectToPage(@Range(min = 1,message = "查询失败，该参数无效！")
+                                                            @PathVariable Integer current,
+                                                            @PathVariable Integer size){
+        log.debug("开始处理分页查询属性模板列表的请求，当前页为:{},每页数量为:{}",current,size);
+        List<AttributeTemplate> attributeTemplates = attributeTemplateService.selectToPage(current, size);
+        return JsonResult.ok(attributeTemplates);
     }
 }
