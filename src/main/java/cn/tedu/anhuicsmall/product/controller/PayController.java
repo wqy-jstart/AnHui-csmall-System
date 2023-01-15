@@ -52,7 +52,7 @@ public class PayController {
     // 支付宝一步通知路径，公网地址
     private static final String NOTIFY_URL = "";
     // 支付宝同步通知路径，也就是当付款完毕后跳转本项目的页面，可私网地址
-    private static final String RETURN_URL = "http://localhost:9902/product/paySuccess";
+    private static final String RETURN_URL = "http://125.74.199.190:9902/product/paySuccess";
 
     /**
      * 处理请求支付的方法
